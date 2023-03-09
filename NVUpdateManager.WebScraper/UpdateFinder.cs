@@ -7,6 +7,8 @@ using NVUpdateManager.WebScraper.Data;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
 
 namespace NVUpdateManager.WebScraper
 {
@@ -20,6 +22,8 @@ namespace NVUpdateManager.WebScraper
             var options = new EdgeOptions();
 
             options.AddArgument("--no-sandbox");
+
+            new DriverManager().SetUpDriver(new EdgeConfig());
 
             _driver = new EdgeDriver(options);
 
