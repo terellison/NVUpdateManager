@@ -41,7 +41,7 @@ namespace NVUpdateManager.NotificationService
                         _logger.LogInformation(
                             "Found new Game Ready Driver update" +
                             $"\nDetails: \n{newUpdateInfo}\n" +
-                            $"Sending notification to {_options.Value.MaintenanceAddress}");
+                            $"Sending notification to {_options.Value.NotificationAddress}");
 
                         try
                         {
