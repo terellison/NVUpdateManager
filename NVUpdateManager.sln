@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Notificatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.EmailHandler", "NVUpdateManager.EmailHandler\NVUpdateManager.EmailHandler.csproj", "{868C187D-1BE1-484C-80B2-D19975061669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NVUpdateManager.Core.Tests", "NVUpdateManager.Core.Tests\NVUpdateManager.Core.Tests.csproj", "{2B9F7E42-36C0-4FFB-BC5C-7CA917414229}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Core.Tests", "NVUpdateManager.Core.Tests\NVUpdateManager.Core.Tests.csproj", "{2B9F7E42-36C0-4FFB-BC5C-7CA917414229}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NVUpdateManager.EmailHandler.Tests", "NVUpdateManager.EmailHandler.Tests\NVUpdateManager.EmailHandler.Tests.csproj", "{9A524B30-593B-4A86-A649-DB7B3977B144}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.EmailHandler.Tests", "NVUpdateManager.EmailHandler.Tests\NVUpdateManager.EmailHandler.Tests.csproj", "{9A524B30-593B-4A86-A649-DB7B3977B144}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "NVUpdateManager.NotificationService.Installer", "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj", "{5D6BA9E1-14A8-48BF-B275-82636F4E9A3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,8 @@ Global
 		{9A524B30-593B-4A86-A649-DB7B3977B144}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A524B30-593B-4A86-A649-DB7B3977B144}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A524B30-593B-4A86-A649-DB7B3977B144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D6BA9E1-14A8-48BF-B275-82636F4E9A3B}.Debug|Any CPU.ActiveCfg = Debug
+		{5D6BA9E1-14A8-48BF-B275-82636F4E9A3B}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
