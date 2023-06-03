@@ -23,7 +23,7 @@ namespace NVUpdateManager.WebScraper
 
             options.AddArgument("--no-sandbox");
 
-            new DriverManager().SetUpDriver(new EdgeConfig());
+            _ = new DriverManager().SetUpDriver(new EdgeConfig());
 
             _driver = new EdgeDriver(options);
 
