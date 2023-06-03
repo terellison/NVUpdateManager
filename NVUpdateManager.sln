@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Notificatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.EmailHandler", "NVUpdateManager.EmailHandler\NVUpdateManager.EmailHandler.csproj", "{868C187D-1BE1-484C-80B2-D19975061669}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NVUpdateManager.Core.Tests", "NVUpdateManager.Core.Tests\NVUpdateManager.Core.Tests.csproj", "{2B9F7E42-36C0-4FFB-BC5C-7CA917414229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NVUpdateManager.EmailHandler.Tests", "NVUpdateManager.EmailHandler.Tests\NVUpdateManager.EmailHandler.Tests.csproj", "{9A524B30-593B-4A86-A649-DB7B3977B144}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{868C187D-1BE1-484C-80B2-D19975061669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{868C187D-1BE1-484C-80B2-D19975061669}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{868C187D-1BE1-484C-80B2-D19975061669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B9F7E42-36C0-4FFB-BC5C-7CA917414229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B9F7E42-36C0-4FFB-BC5C-7CA917414229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B9F7E42-36C0-4FFB-BC5C-7CA917414229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B9F7E42-36C0-4FFB-BC5C-7CA917414229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A524B30-593B-4A86-A649-DB7B3977B144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A524B30-593B-4A86-A649-DB7B3977B144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A524B30-593B-4A86-A649-DB7B3977B144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A524B30-593B-4A86-A649-DB7B3977B144}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
