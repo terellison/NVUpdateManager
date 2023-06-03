@@ -1,6 +1,6 @@
 using static NVUpdateManager.Core.DriverManager;
 using static NVUpdateManager.WebScraper.UpdateFinder;
-//using static EmailHandler.EmailHandler;
+using static NVUpdateManager.EmailHandler.EmailHandler;
 using NVUpdateManager.WebScraper.Data;
 using NVUpdateManager.Core;
 using Microsoft.Extensions.Options;
@@ -87,14 +87,25 @@ namespace NVUpdateManager.NotificationService
 
         private void GetGPUSearchParams(DriverInfo currentDriver, out string gpuSeries, out string gpuName, out string driverType)
         {
-            var supportedDriver = _supportedDrivers.FirstOrDefault(x => x.WmiName.Equals(currentDriver.DeviceName));
+            /* 
+             * Null reference warnings are disabled here because dependency injection required 
+             * that SupportedDriver's properties be nullable; They will never be null
+             */
 
-            if(supportedDriver != null)
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+            var supportedDriver = _supportedDrivers.FirstOrDefault(x => x.WmiName.Equals(currentDriver.DeviceName));
+            if (supportedDriver != null)
             {
+
                 gpuName = supportedDriver.SearchName;
                 gpuSeries = supportedDriver.DriverSeries;
                 driverType = supportedDriver.DriverType;
             }
+
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             else
             {
@@ -104,7 +115,17 @@ namespace NVUpdateManager.NotificationService
 
         private void SendUpdateNotification(UpdateInfo info)
         {
-            throw new NotImplementedException();
+            if(!IsConfigured)
+            {
+                ConfigureLogicAppEndpoint(_options.Value.Entropy, _options.Value.EncryptedAzLogicAppEndpoint);
+                ConfigureAddresses(_options.Value.NotificationAddress);
+            }
+
+            
+
+            SendNotificationEmail($"New Game Ready Driver update available",
+                info.ToString(),
+                EmailHandler.SendPriority.Normal);
         }
 
     }

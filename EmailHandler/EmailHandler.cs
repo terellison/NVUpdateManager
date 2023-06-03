@@ -25,8 +25,7 @@ namespace NVUpdateManager.EmailHandler
     {
         private static string Iv;
         private static string SecureEndpoint;
-        private static string NotifyAddress;
-        private static string MaintenanceAddress;
+        private static string NotificationAddress;
 
         public static void ConfigureLogicAppEndpoint(string iv, string secureEndpoint)
         {
@@ -50,7 +49,6 @@ namespace NVUpdateManager.EmailHandler
             byte[] encryptedData = ProtectedData.Protect(toEncrypt, entropy, DataProtectionScope.LocalMachine);
             string encryptedBase64 = Convert.ToBase64String(encryptedData);
 
-            //byte[] decryptedData = ProtectedData.Unprotect(Convert.FromBase64String(encryptedBase64), entropy, DataProtectionScope.LocalMachine);
 
             Console.WriteLine("<emailrelay scope=\"{2}\" iv=\"{0}\">{1}</emailrelay>",
                 Convert.ToBase64String(entropy),
@@ -118,9 +116,9 @@ namespace NVUpdateManager.EmailHandler
             }
         }
 
-        public static void SendCompletionEmailToMaintenance(string subject, string messageBody, SendPriority pri)
+        public static void SendNotificationEmail(string subject, string messageBody, SendPriority pri)
         {
-            SendEmail(MaintenanceAddress, subject, messageBody, pri);
+            SendEmail(NotificationAddress, subject, messageBody, pri);
         }
 
 
@@ -129,10 +127,9 @@ namespace NVUpdateManager.EmailHandler
             return DecodeSecureEndpoint(SecureEndpoint, Iv);
         }
 
-        public static void ConfigureAddresses(string notifyAddress, string maintenanceAddress)
+        public static void ConfigureAddresses(string notificationAddress)
         {
-            NotifyAddress = notifyAddress;
-            MaintenanceAddress = maintenanceAddress;
+            NotificationAddress = notificationAddress;
         }
 
         public static bool IsConfigured
@@ -142,8 +139,7 @@ namespace NVUpdateManager.EmailHandler
                 return
                     !string.IsNullOrEmpty(Iv) &&
                     !string.IsNullOrEmpty(SecureEndpoint) &&
-                    !string.Equals(NotifyAddress, null) &&
-                    !string.Equals(MaintenanceAddress, null)
+                    !string.Equals(NotificationAddress, null)
                     ;
             }
         }
