@@ -7,29 +7,22 @@ namespace NVUpdateManager.EmailHandler
 {
     public class EmailInfo
     {
-        public string To { get; set; }
-        public string From { get; set; }
         public string Subject { get; set; }
-        public string EmailBody { get; set; }
-        public string Priority { get; set; }
+        public string Body { get; set; }
+
+        public string Email { get; set; }
     }
 
-    public enum SendPriority
-    {
-        Low,
-        Normal,
-        High
-    }
 
     public static class EmailHandler
     {
-        private static string Iv;
+        private static string Entropy;
         private static string SecureEndpoint;
         private static string NotificationAddress;
 
         public static void ConfigureLogicAppEndpoint(string iv, string secureEndpoint)
         {
-            Iv = iv;
+            Entropy = iv;
             SecureEndpoint = secureEndpoint;
         }
         public static void EncodeLogicAppEndpoint(string insecureEndpointString)
@@ -47,13 +40,10 @@ namespace NVUpdateManager.EmailHandler
             }
 
             byte[] encryptedData = ProtectedData.Protect(toEncrypt, entropy, DataProtectionScope.LocalMachine);
-            string encryptedBase64 = Convert.ToBase64String(encryptedData);
 
-
-            Console.WriteLine("<emailrelay scope=\"{2}\" iv=\"{0}\">{1}</emailrelay>",
+            Console.WriteLine("entropy=\"{0}\"\nencrypted endpoint=\"{1}\"",
                 Convert.ToBase64String(entropy),
-                Convert.ToBase64String(encryptedData),
-                Environment.GetEnvironmentVariable("computerName"));
+                Convert.ToBase64String(encryptedData));
         }
 
         public static string DecodeSecureEndpoint(string secureEndpoint, string iv)
@@ -71,25 +61,15 @@ namespace NVUpdateManager.EmailHandler
             }
         }
 
-        private static void SendEmail(string to, string subject, string body, SendPriority priority)
+        private static void SendEmail(string to, string subject, string body)
         {
             try
             {
                 var emailObj = new EmailInfo();
-                emailObj.Priority = "Normal";
-                emailObj.To = to;
-                emailObj.From = "unused2";
+                emailObj.Email = to;
                 emailObj.Subject = subject;
-                emailObj.EmailBody = body;
+                emailObj.Body = body;
 
-                if (priority == SendPriority.Low)
-                {
-                    emailObj.Priority = "Low";
-                }
-                else if (priority == SendPriority.High)
-                {
-                    emailObj.Priority = "High";
-                }
 
                 string json = System.Text.Json.JsonSerializer.Serialize(emailObj, typeof(EmailInfo));
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -116,15 +96,15 @@ namespace NVUpdateManager.EmailHandler
             }
         }
 
-        public static void SendNotificationEmail(string subject, string messageBody, SendPriority pri)
+        public static void SendNotificationEmail(string subject, string messageBody)
         {
-            SendEmail(NotificationAddress, subject, messageBody, pri);
+            SendEmail(NotificationAddress, subject, messageBody);
         }
 
 
         private static string GetRelayEndpoint()
         {
-            return DecodeSecureEndpoint(SecureEndpoint, Iv);
+            return DecodeSecureEndpoint(SecureEndpoint, Entropy);
         }
 
         public static void ConfigureAddresses(string notificationAddress)
@@ -137,7 +117,7 @@ namespace NVUpdateManager.EmailHandler
             get
             {
                 return
-                    !string.IsNullOrEmpty(Iv) &&
+                    !string.IsNullOrEmpty(Entropy) &&
                     !string.IsNullOrEmpty(SecureEndpoint) &&
                     !string.Equals(NotificationAddress, null)
                     ;
