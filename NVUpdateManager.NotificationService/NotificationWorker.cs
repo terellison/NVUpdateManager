@@ -116,8 +116,7 @@ namespace NVUpdateManager.NotificationService
             
 
             SendNotificationEmail($"New Game Ready Driver update available",
-                info.ToString(),
-                EmailHandler.SendPriority.Normal);
+                info.ToString());
         }
 
     }
