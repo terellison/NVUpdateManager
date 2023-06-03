@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Core", "NVU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.NotificationService", "NVUpdateManager.NotificationService\NVUpdateManager.NotificationService.csproj", "{AF50B2B1-A028-4978-AFA0-755D6359893D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.EmailHandler", "EmailHandler\NVUpdateManager.EmailHandler.csproj", "{13F6C705-4607-4AB7-AD51-539A273E67D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.EmailHandler", "NVUpdateManager.EmailHandler\NVUpdateManager.EmailHandler.csproj", "{868C187D-1BE1-484C-80B2-D19975061669}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{AF50B2B1-A028-4978-AFA0-755D6359893D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF50B2B1-A028-4978-AFA0-755D6359893D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF50B2B1-A028-4978-AFA0-755D6359893D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13F6C705-4607-4AB7-AD51-539A273E67D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13F6C705-4607-4AB7-AD51-539A273E67D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13F6C705-4607-4AB7-AD51-539A273E67D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13F6C705-4607-4AB7-AD51-539A273E67D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{868C187D-1BE1-484C-80B2-D19975061669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{868C187D-1BE1-484C-80B2-D19975061669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{868C187D-1BE1-484C-80B2-D19975061669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{868C187D-1BE1-484C-80B2-D19975061669}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,7 +16,6 @@ namespace NVUpdateManager.NotificationService
         private readonly IEnumerable<SupportedDriver> _supportedDrivers;
 
         private const double ITERATION_TIME_IN_HOURS = 24; // Time between checks for updates
-        private const string _verifySamplesBusyFile = "D:\\Temp\\VerifySamplesPCLocalRunServer\\ServerBusy.txt";
         
         public NotificationWorker(ILogger<NotificationWorker> logger, IOptions<EmailConfiguration> options, IEnumerable<SupportedDriver> supportedDrivers)
         {
@@ -29,38 +28,31 @@ namespace NVUpdateManager.NotificationService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (!File.Exists(_verifySamplesBusyFile))
+                
+                _logger.LogInformation("Checking for new driver update at {Now}", DateTime.Now);
+
+                var currentDriverInfo = await GetInstalledDriverInfo();
+                var newUpdateInfo = CheckForNewUpdate(currentDriverInfo);
+
+                if (newUpdateInfo != null)
                 {
-                    _logger.LogInformation("Checking for new driver update at {Now}", DateTime.Now);
+                    _logger.LogInformation(
+                        "Found new Game Ready Driver update" +
+                        $"\nDetails: \n{newUpdateInfo}\n" +
+                        $"Sending notification to {_options.Value.NotificationAddress}");
 
-                    var currentDriverInfo = await GetInstalledDriverInfo();
-                    var newUpdateInfo = CheckForNewUpdate(currentDriverInfo);
-
-                    if (newUpdateInfo != null)
+                    try
                     {
-                        _logger.LogInformation(
-                            "Found new Game Ready Driver update" +
-                            $"\nDetails: \n{newUpdateInfo}\n" +
-                            $"Sending notification to {_options.Value.NotificationAddress}");
-
-                        try
-                        {
-                            SendUpdateNotification(newUpdateInfo);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new InvalidOperationException("Failed to send update email to maintenance", ex);
-                        }
+                        SendUpdateNotification(newUpdateInfo);
                     }
-
-                    await Task.Delay(TimeSpan.FromHours(ITERATION_TIME_IN_HOURS), stoppingToken);
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException("Failed to send update email to maintenance", ex);
+                    }
                 }
-                else
-                {
-                    _logger.LogInformation($"Found {_verifySamplesBusyFile}, waiting 1 hour");
 
-                    await Task.Delay(TimeSpan.FromMinutes(60), stoppingToken);
-                }
+                await Task.Delay(TimeSpan.FromHours(ITERATION_TIME_IN_HOURS), stoppingToken);
+                
             }
         }
 
