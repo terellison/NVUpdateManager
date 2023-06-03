@@ -13,9 +13,13 @@ namespace NVUpdateManager.NotificationService
 
                 Usage:
                 
-                    -EncryptEndpoint: Encrypt Azure Logic App endpoint
+                    /EncryptEndpoint: Encrypt Azure Logic App endpoint
 
-                    Example: NVUpdateManager.NotificationService.exe -EncryptEndpoint ""your-endpoint-here""
+                    Example: NVUpdateManager.NotificationService.exe /EncryptEndpoint ""your-endpoint-here""
+
+                    /Install: install as a service
+
+                    /Uninstall: Uinstall existing service
             ";
 
         public static void Main(string[] args)
