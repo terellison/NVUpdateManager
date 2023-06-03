@@ -1,10 +1,12 @@
 using NVUpdateManager.NotificationService.Data;
 using static NVUpdateManager.EmailHandler.EmailHandler;
+using CliWrap;
 
 namespace NVUpdateManager.NotificationService
 {
     public class Program
     {
+        private const string ServiceName = $"{nameof(NVUpdateManager)}.{nameof(NotificationService)}";
         private static string Usage =
             @"
                 Run with no arguments to start the service normally
@@ -26,7 +28,7 @@ namespace NVUpdateManager.NotificationService
             IHost host = Host.CreateDefaultBuilder(args)
                 .UseWindowsService(options =>
                 {
-                    options.ServiceName = $"{nameof(NVUpdateManager)}.{nameof(NotificationService)}";
+                    options.ServiceName = ServiceName;
                 })
                 .ConfigureServices(( hostContext, services) =>
                 {
@@ -59,14 +61,41 @@ namespace NVUpdateManager.NotificationService
 
         private static void ParseArguments(string[] args)
         {
-            if (args[0].ToLower().Equals("-encryptendpoint"))
+            switch(args[0].ToLower())
             {
-                EncodeLogicAppEndpoint(args[1]);
+                case "/encryptendpoint":
+                    EncodeLogicAppEndpoint(args[1]);
+                    break;
+                case "/install":
+                    _ = Install();
+                    break;
+                case "/uninstall":
+                    _ = Uninstall();
+                    break;
+                default:
+                    ShowUsage();
+                    break;
             }
-            else
-            {
-                ShowUsage();
-            }
+        }
+
+        private static async Task Install()
+        {
+            var executablePath = Path.Combine(AppContext.BaseDirectory, $"{ServiceName}.exe");
+
+            await Cli.Wrap("sc")
+                .WithArguments(new[] { "create", ServiceName, $"binPath={executablePath}", "start=auto" })
+                .ExecuteAsync();
+        }
+
+        private static async Task Uninstall()
+        {
+            await Cli.Wrap("sc")
+                .WithArguments(new[] { "stop", ServiceName })
+                .ExecuteAsync();
+
+            await Cli.Wrap("sc")
+                .WithArguments(new[] { "delete", ServiceName })
+                .ExecuteAsync();
         }
 
         private static void ShowUsage()
