@@ -20,9 +20,9 @@ namespace NVUpdateManager.EmailHandler
         private static string SecureEndpoint;
         private static string NotificationAddress;
 
-        public static void ConfigureLogicAppEndpoint(string iv, string secureEndpoint)
+        public static void ConfigureLogicAppEndpoint(string entropy, string secureEndpoint)
         {
-            Entropy = iv;
+            Entropy = entropy;
             SecureEndpoint = secureEndpoint;
         }
         public static void EncodeLogicAppEndpoint(string insecureEndpointString)
@@ -46,17 +46,17 @@ namespace NVUpdateManager.EmailHandler
                 Convert.ToBase64String(encryptedData));
         }
 
-        public static string DecodeSecureEndpoint(string secureEndpoint, string iv)
+        public static string DecodeSecureEndpoint(string secureEndpoint, string entropy)
         {
             byte[] endpointBytes = Convert.FromBase64String(secureEndpoint);
 
-            if (string.IsNullOrEmpty(iv))
+            if (string.IsNullOrEmpty(entropy))
             {
                 return Encoding.ASCII.GetString(ProtectedData.Unprotect(endpointBytes, null, DataProtectionScope.LocalMachine));
             }
             else
             {
-                byte[] ivBytes = Convert.FromBase64String(iv);
+                byte[] ivBytes = Convert.FromBase64String(entropy);
                 return Encoding.ASCII.GetString(ProtectedData.Unprotect(endpointBytes, ivBytes, DataProtectionScope.LocalMachine));
             }
         }

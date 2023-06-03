@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NVUpdateManager.EmailHandler;
+using static NVUpdateManager.EmailHandler.EmailHandler;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,33 +10,27 @@ namespace NVUpdateManager.EmailHandler.Tests
     public class EmailHandlerTests
     {
         [TestMethod()]
-        public void ConfigureLogicAppEndpointTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
         public void EncodeLogicAppEndpointTest()
         {
-            Assert.Fail();
-        }
+            var writer = new StringWriter();
+            Console.SetOut(writer);
+            EncodeLogicAppEndpoint("foo");
+            var output = writer.ToString();
 
-        [TestMethod()]
-        public void DecodeSecureEndpointTest()
-        {
-            Assert.Fail();
-        }
+            Assert.IsTrue(output.Contains("entropy"));
+            Assert.IsTrue(output.Contains("encrypted endpoint"));
 
-        [TestMethod()]
-        public void SendNotificationEmailTest()
-        {
-            Assert.Fail();
-        }
+            var data = output.Split('\n');
 
-        [TestMethod()]
-        public void ConfigureAddressesTest()
-        {
-            Assert.Fail();
+            var entropyLength = data[0].LastIndexOf('\"') - data[0].IndexOf('\"');
+            var encryptedEndpointLength = data[1].LastIndexOf('\"') - data[1].IndexOf('\"');
+
+            string entropy = data[0].Substring(data[0].IndexOf('\"') + 1, entropyLength - 1);
+            string encryptedEndpoint = data[1].Substring(data[1].IndexOf('\"') + 1, encryptedEndpointLength - 1);
+
+            var result = DecodeSecureEndpoint(encryptedEndpoint, entropy);
+
+            Assert.IsTrue(result.Equals("foo"));
         }
     }
 }
