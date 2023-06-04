@@ -55,9 +55,8 @@ jobs:
           $devenv_location = $devenv_location.replace('exe','com')
           echo "DEVENV_LOCATION=$devenv_location"
           $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj`"".Split(" ")
-          $output = & "$devenv_location" $args
-          Write-Host $output
-          Start-Sleep -Seconds 120
+          Write-Host running '& "$devenv_location" $args'
+          & "$devenv_location" $args
       - name: Compress archive
         run: |
           ls .\NVUpdateManager.NotificationService.Installer\
