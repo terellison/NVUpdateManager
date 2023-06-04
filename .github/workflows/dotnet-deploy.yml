@@ -1,0 +1,56 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  release:
+      runs-on: ubuntu-latest
+
+      steps:
+      - uses: actions/checkout@v3
+      - name: Increment Commit Tag
+        id: version-tag
+        run: |
+          current_tag=$(git describe --abbrev=0 --tags)
+          echo current tag: $current_tag
+          major=$(echo $current_tag | cut -d "." -f 1 | cut -d "v" -f 2)
+          minor=$(echo $current_tag | cut -d "." -f 2)
+          new_minorh=$((minor + 1))
+          new_tag="v$major.$new_minor"
+          package_version="$major.$new_minor"
+          git tag $new_tag
+          git push --tags
+          echo "PACKAGE_VERSION=$package_version" >> $GITHUB_OUTPUT
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+        
+  build:
+    needs: release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+      - name: Build installer project
+        run: |
+          $devenv = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
+          & $devenv NVUpdateManager.sln /Deploy Release /Project "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj"
+          tar -a -c -f NVUpdateManager.NotificationService.zip .\NVUpdateManager.NotificationService.Installer\Release
+          
