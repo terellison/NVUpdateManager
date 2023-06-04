@@ -51,7 +51,7 @@ jobs:
           dotnet-version: 6.0.x
       - name: Setup devenv
         id: setup-devenv
-      - run: |
+        run: |
           $devenv_location = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
           echo "DEVENV_LOCATION=$devenv_location >> $GITHUB_OUTPUT
       - name: Build installer project
