@@ -55,6 +55,6 @@ jobs:
           echo devenv location: $devenv
           dir
           echo running "$devenv" .\NVUpdateManager.sln /Deploy Release /Project "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj"
-          & "$devenv" .\NVUpdateManager.sln /Deploy Release /Project "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj"
+          "$devenv" .\NVUpdateManager.sln /Deploy Release /Project "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj"
           tar -a -c -f NVUpdateManager.NotificationService.zip .\NVUpdateManager.NotificationService.Installer\Release
           
