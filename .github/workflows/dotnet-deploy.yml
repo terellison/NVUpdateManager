@@ -55,5 +55,6 @@ jobs:
           echo $devenv
           $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj`"".Split(" ")
           Invoke-Expression "& `"$devenv`" $args"
+          Start-Sleep -Seconds 30
           tar -a -c -f NVUpdateManager.NotificationService.zip .\NVUpdateManager.NotificationService.Installer\Release
           
