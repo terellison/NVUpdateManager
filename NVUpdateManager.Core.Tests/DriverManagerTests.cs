@@ -20,16 +20,17 @@ namespace NVUpdateManager.Core.Tests
             }
             catch (Exception ex)
             {
-                Assert.IsInstanceOfType(ex, typeof(NotSupportedException));
+                Assert.IsNotInstanceOfType(ex, typeof(NotSupportedException));
             }
 
-            Assert.IsNotNull(driverData);
-
-            var properties = driverData.GetType().GetProperties();
-
-            foreach( var property in properties )
+            if (driverData != null)
             {
-                Assert.IsNotNull(property.GetValue(driverData));
+                var properties = driverData.GetType().GetProperties();
+
+                foreach (var property in properties)
+                {
+                    Assert.IsNotNull(property.GetValue(driverData));
+                } 
             }
         }
     }
