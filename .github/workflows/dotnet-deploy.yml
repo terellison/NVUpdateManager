@@ -52,6 +52,7 @@ jobs:
       - name: Build installer project
         run: |
           $devenv = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
-          & $devenv NVUpdateManager.sln /Deploy Release /Project "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj"
+          echo devenv location: $devenv
+          & "$devenv" NVUpdateManager.sln /Deploy Release /Project "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj"
           tar -a -c -f NVUpdateManager.NotificationService.zip .\NVUpdateManager.NotificationService.Installer\Release
           
