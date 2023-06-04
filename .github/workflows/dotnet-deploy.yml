@@ -56,5 +56,32 @@ jobs:
           $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj`"".Split(" ")
           Invoke-Expression "& `"$devenv`" $args"
           Start-Sleep -Seconds 30
-          tar -a -c -f NVUpdateManager.NotificationService.zip .\NVUpdateManager.NotificationService.Installer\Release
+          tar -a -c -f NVUpdateManager.NotificationService.zip
+          Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
+      - name: Upload zip file
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact
+          path: NVUpdateManager.NotificationService.zip
+          
+  upload-release-artifact:
+    needs: 
+    - build
+    - release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: artifact
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./NVUpdateManager.NotificationService.zip
+          asset_name: NVUpdateManager.NotificationService.zip
+          asset_content_type: application/zip
           
