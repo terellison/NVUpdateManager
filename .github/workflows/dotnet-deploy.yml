@@ -56,9 +56,11 @@ jobs:
           $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj`"".Split(" ")
           $output = & "$devenv_location" $args
           Write-Host $output
-          Start-Sleep -Seconds 60
+          Start-Sleep -Seconds 120
       - name: Compress archive
-        run: Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
+        run: |
+          ls .\NVUpdateManager.NotificationService.Installer\
+          Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
       - name: Upload zip file
         uses: actions/upload-artifact@v3
         with:
