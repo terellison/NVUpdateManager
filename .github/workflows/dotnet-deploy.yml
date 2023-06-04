@@ -21,7 +21,7 @@ jobs:
           echo current tag: $current_tag
           major=$(echo $current_tag | cut -d "." -f 1 | cut -d "v" -f 2)
           minor=$(echo $current_tag | cut -d "." -f 2)
-          new_minorh=$((minor + 1))
+          new_minor=$((minor + 1))
           new_tag="v$major.$new_minor"
           package_version="$major.$new_minor"
           git tag $new_tag
