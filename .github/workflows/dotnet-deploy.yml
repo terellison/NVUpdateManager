@@ -49,6 +49,8 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore
       - name: Build installer project
         run: |
           $devenv_location = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
