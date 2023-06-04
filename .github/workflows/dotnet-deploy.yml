@@ -49,15 +49,18 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 6.0.x
+      - name: Setup devenv
+        id: setup-devenv
+      - run: |
+          $devenv_location = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
+          echo "DEVENV_LOCATION=$devenv_location >> $GITHUB_OUTPUT
       - name: Build installer project
         run: |
-          $devenv = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
-          echo $devenv
           $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj`"".Split(" ")
-          Invoke-Expression "& `"$devenv`" $args"
-          Start-Sleep -Seconds 30
-          ls .\NVUpdateManager.NotificationService.Installer\
-          Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
+          "${{ steps.setup-devenv.outputs.devenv_location }}" $args
+          Start-Sleep -Seconds 60
+      - name: Compress archive
+        run: Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
       - name: Upload zip file
         uses: actions/upload-artifact@v3
         with:
