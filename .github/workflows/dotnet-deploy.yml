@@ -27,7 +27,7 @@ jobs:
           release_tag="v$major.$new_minor"
           git tag $release_tag
           git push --tags
-          echo "RELEASE_TAG=$release_tag >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=$release_tag" >> $GITHUB_OUTPUT
           
       - name: Create Release
         id: create_release
