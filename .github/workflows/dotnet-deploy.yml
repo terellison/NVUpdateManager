@@ -53,11 +53,12 @@ jobs:
         id: setup-devenv
         run: |
           $devenv_location = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
-          echo "DEVENV_LOCATION=$devenv_location >> $GITHUB_OUTPUT
+          echo "DEVENV_LOCATION=$devenv_location" >> $GITHUB_OUTPUT
       - name: Build installer project
         run: |
           $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj`"".Split(" ")
-          "${{ steps.setup-devenv.outputs.devenv_location }}" $args
+          $output = & "${{ steps.setup-devenv.outputs.devenv_location }}" $args
+          Write-Host $output
           Start-Sleep -Seconds 60
       - name: Compress archive
         run: Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
