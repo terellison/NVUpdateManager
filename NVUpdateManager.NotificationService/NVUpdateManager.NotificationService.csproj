@@ -1,10 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-NVUpdateManager.NotificationService-521cbd9e-f6aa-4d72-b3f2-95c00580e746</UserSecretsId>
+    <Platforms>AnyCPU;x86</Platforms>
+    <SignAssembly>False</SignAssembly>
+    <Title>NVUpdateManager.NotificationService</Title>
+    <Authors>Terry Ellison</Authors>
+    <Copyright>Terry Ellison</Copyright>
+    <PackageProjectUrl>https://github.com/terellison/NVUpdateManager</PackageProjectUrl>
+    <RepositoryUrl>$(ProjectURL)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

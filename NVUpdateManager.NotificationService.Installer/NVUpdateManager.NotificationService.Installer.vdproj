@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_FBFA7B3F7E404CBC899CA397450537FE"
+        "MsmKey" = "8:_859A7CCC582047A498A716D7C1174F74"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -44,6 +44,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -93,35 +101,33 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_2A55D9B30E1142C69758C2B8A7BBCFFA"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_51902A0AEDFC4353A0F83A0A7F89B8D6"
             {
-            "Name" = "8:Publish Items from NVUpdateManager.NotificationService (Active)"
+            "Name" = "8:Publish Items from NVUpdateManager.NotificationService (Release x86)"
             "Condition" = "8:"
-            "Object" = "8:_FBFA7B3F7E404CBC899CA397450537FE"
+            "Object" = "8:_859A7CCC582047A498A716D7C1174F74"
             "FileType" = "3:2"
             "InstallAction" = "3:4"
             "Arguments" = "8:/Uninstall"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_F2CB4DAE_6172_4DCB_A3A2_99EAA19DACA4"
+            "Identifier" = "8:_8F534B41_54DA_459D_A85F_AA5B51776655"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
-            "Run64Bit" = "11:TRUE"
             }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_D7461F68B728427385B0C82B11CAC4AE"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_8D598B49E3DC4A0184B9A23E17588FB5"
             {
-            "Name" = "8:Publish Items from NVUpdateManager.NotificationService (Active)"
+            "Name" = "8:Publish Items from NVUpdateManager.NotificationService (Release x86)"
             "Condition" = "8:"
-            "Object" = "8:_FBFA7B3F7E404CBC899CA397450537FE"
+            "Object" = "8:_859A7CCC582047A498A716D7C1174F74"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
             "Arguments" = "8:/Install"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_36FFD1DD_4A78_41FD_9D41_F606E9828DEF"
+            "Identifier" = "8:_8F4C43AE_4BE7_413F_9231_FF85C38BF9E6"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
-            "Run64Bit" = "11:TRUE"
             }
         }
         "DefaultFeature"
@@ -724,9 +730,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FBFA7B3F7E404CBC899CA397450537FE"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_859A7CCC582047A498A716D7C1174F74"
             {
-            "SourcePath" = "8:..\\NVUpdateManager.NotificationService\\obj\\Release\\net6.0\\apphost.exe"
+            "SourcePath" = "8:..\\NVUpdateManager.NotificationService\\obj\\x86\\Release\\net6.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CA3EC69E781146AC9A821DF3550D95AE"
@@ -744,7 +750,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
+            "OutputConfiguration" = "8:Release|x86"
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{AF50B2B1-A028-4978-AFA0-755D6359893D}"
             "ShowKeyOutput" = "11:TRUE"
