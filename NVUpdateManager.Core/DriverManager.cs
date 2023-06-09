@@ -5,12 +5,13 @@ using System.Management;
 using System.Net;
 using System.Threading.Tasks;
 using NVUpdateManager.Core.Data;
+using NVUpdateManager.Core.Interfaces;
 
 namespace NVUpdateManager.Core
 {
-    public static class DriverManager
+    internal sealed class DriverManager : IDriverManager
     {
-        public static Task<UpdateResult> InstallUpdate(string downloadLink)
+        public Task<UpdateResult> InstallUpdate(string downloadLink)
         {
             return Task.Run(async () =>
             {
@@ -20,7 +21,7 @@ namespace NVUpdateManager.Core
             });
         }
 
-        public static Task<DriverInfo> GetInstalledDriverInfo()
+        public Task<DriverInfo> GetInstalledDriverInfo()
         {
             return Task.Run(() =>
             {
@@ -33,13 +34,13 @@ namespace NVUpdateManager.Core
                     try
                     {
                         nvDriver = (from ManagementBaseObject x in drivers
-                                        let deviceName = x.Properties["DeviceName"].Value?.ToString()
-                                        where
-                                            !string.IsNullOrWhiteSpace(deviceName)
-                                            && (deviceName.Contains(nameof(DriverType.GeForce))
-                                            || deviceName.Contains(nameof(DriverType.RTX))
-                                            || deviceName.Contains(nameof(DriverType.GTX)))
-                                        select x)
+                                    let deviceName = x.Properties["DeviceName"].Value?.ToString()
+                                    where
+                                        !string.IsNullOrWhiteSpace(deviceName)
+                                        && (deviceName.Contains(nameof(DriverType.GeForce))
+                                        || deviceName.Contains(nameof(DriverType.RTX))
+                                        || deviceName.Contains(nameof(DriverType.GTX)))
+                                    select x)
                                                     .FirstOrDefault();
                     }
                     catch (Exception ex)
@@ -52,12 +53,12 @@ namespace NVUpdateManager.Core
             });
         }
 
-        private static string ExtractUpdate(string updatePath)
+        private string ExtractUpdate(string updatePath)
         {
             throw new NotImplementedException();
         }
 
-        private static Task<string> DownloadDriver(string downloadLink)
+        private Task<string> DownloadDriver(string downloadLink)
         {
             return Task.Run(() =>
             {
