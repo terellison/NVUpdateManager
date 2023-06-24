@@ -1,6 +1,7 @@
 using NVUpdateManager.NotificationService.Data;
 using static NVUpdateManager.EmailHandler.EmailHandler;
 using CliWrap;
+using NVUpdateManager.Core.Extensions;
 
 namespace NVUpdateManager.NotificationService
 {
@@ -55,6 +56,8 @@ namespace NVUpdateManager.NotificationService
                     {
                         hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
                     });
+
+                    services.AddDriverManager();
 
                     services.AddHostedService<NotificationWorker>();
                 })

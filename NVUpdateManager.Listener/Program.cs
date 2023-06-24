@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using NVUpdateManager.Core.Extensions;
 using NVUpdateManager.Listener.Data;
 using NVUpdateManager.Listener.Services;
 
@@ -24,7 +25,7 @@ namespace NVUpdateManager.Listener
             });
 
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddDriverManager();
             builder.Services.AddSingleton<IUpdateService, DriverUpdateService>();
             builder.Services.AddSingleton<IDriverService, NVDriverService>();
 

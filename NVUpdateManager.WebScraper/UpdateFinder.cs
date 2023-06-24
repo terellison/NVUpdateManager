@@ -14,7 +14,7 @@ namespace NVUpdateManager.WebScraper
 {
     public static class UpdateFinder
     {
-        private static readonly string _searchUrl = "https://www.nvidia.com/Download/Find.aspx#";
+        private const string _searchUrl = "https://www.nvidia.com/Download/Find.aspx";
         private static IWebDriver _driver;
 
         public static UpdateInfo FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
@@ -22,10 +22,11 @@ namespace NVUpdateManager.WebScraper
             var options = new EdgeOptions();
 
             options.AddArgument("--no-sandbox");
+            options.AddArguments("--disable-dev-shm-usage");
 
-            _ = new DriverManager().SetUpDriver(new EdgeConfig());
+            var file = new DriverManager().SetUpDriver(new EdgeConfig(), "Latest");
 
-            _driver = new EdgeDriver(options);
+            _driver = new EdgeDriver(Path.GetDirectoryName(file), options);
 
             UpdateInfo info;
 
