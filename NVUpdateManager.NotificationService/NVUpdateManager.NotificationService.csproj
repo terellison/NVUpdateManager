@@ -26,11 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NVUpdateManager.Core\NVUpdateManager.Core.csproj" />
     <ProjectReference Include="..\NVUpdateManager.EmailHandler\NVUpdateManager.EmailHandler.csproj" />
-    <ProjectReference Include="..\NVUpdateManager.WebScraper\NVUpdateManager.WebScraper.csproj">
-      <Private>True</Private>
-      <CopyLocalSatelliteAssemblies>True</CopyLocalSatelliteAssemblies>
-      <IncludeAssets>All</IncludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\NVUpdateManager.WebScraper\NVUpdateManager.WebScraper.csproj" />
   </ItemGroup>
 
   <ItemGroup>
