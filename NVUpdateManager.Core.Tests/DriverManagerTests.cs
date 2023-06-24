@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NVUpdateManager.Core;
+using NVUpdateManager.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,14 @@ namespace NVUpdateManager.Core.Tests
     [TestClass()]
     public class DriverManagerTests
     {
+
+        private readonly IDriverManager _driverManager;
+
+        public DriverManagerTests(IDriverManager driverManager)
+        {
+            _driverManager = driverManager;
+        }
+
         [TestMethod()]
         public async Task GetInstalledDriverInfoTest()
         {
@@ -16,7 +25,7 @@ namespace NVUpdateManager.Core.Tests
 
             try
             {
-                driverData = await DriverManager.GetInstalledDriverInfo();
+                driverData = await _driverManager.GetInstalledDriverInfo();
             }
             catch (Exception ex)
             {
