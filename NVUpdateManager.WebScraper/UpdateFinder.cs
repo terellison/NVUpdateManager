@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using NVUpdateManager.WebScraper.Data;
 using static NVUpdateManager.WebScraper.Data.NvidiaDriverLookupInfo;
 
@@ -16,6 +17,13 @@ namespace NVUpdateManager.WebScraper
 
             var productFamilyId = GetProductFamilySearchValue()[gpuName];
 
+
+            var initialURI = $"https://www.nvidia.com/Download/processFind.aspx?psid={productSeriesId}&pfid={productFamilyId}&osid=57&lid=1&whql=&lang=en-us&ctk=0&qnfslb=00&dtcid=1";
+
+            using(var client = new HttpClient())
+            {
+                var driverListResponse = client.GetAsync(initialURI).Result;
+            }
 
             throw new NotImplementedException();
         }
