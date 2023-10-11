@@ -1,7 +1,11 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
 using NVUpdateManager.WebScraper.Data;
 using static NVUpdateManager.WebScraper.Data.NvidiaDriverLookupInfo;
 
@@ -9,7 +13,7 @@ namespace NVUpdateManager.WebScraper
 {
     public static class UpdateFinder
     {
-        public static UpdateInfo FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
+        public static async Task<UpdateInfo> FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
         {
             // TODO: Deduce arguments, make api call, parse the HTML result
 
@@ -22,10 +26,25 @@ namespace NVUpdateManager.WebScraper
 
             using(var client = new HttpClient())
             {
-                var driverListResponse = client.GetAsync(initialURI).Result;
+                var driverListResponse = await client.GetAsync(initialURI);
+
+                ParseLinkToUpdate(await driverListResponse.Content.ReadAsStringAsync());
+
             }
 
             throw new NotImplementedException();
+        }
+
+        private static string ParseLinkToUpdate(string html)
+        {
+            var parser = new HtmlParser();
+
+            var updateTable = parser.ParseDocument(html);
+
+            _ = updateTable.QuerySelectorAll("td")
+                .Where(x => x.Id == "driverList");
+
+            return string.Empty;
         }
 
         public static string DownloadUpdate(string updateLink)

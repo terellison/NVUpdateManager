@@ -61,7 +61,7 @@ namespace NVUpdateManager.NotificationService
         {
             GetGPUSearchParams(currentDriver, out string gpuSeries, out string gpuName, out string driverType); // Let this throw normally
 
-            var updateInfo = FindLatestUpdate(gpuSeries, gpuName, driverType);
+            var updateInfo = FindLatestUpdate(gpuSeries, gpuName, driverType).Result;
 
             try
             {

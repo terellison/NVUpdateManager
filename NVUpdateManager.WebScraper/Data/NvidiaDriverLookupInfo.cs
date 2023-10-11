@@ -10,7 +10,7 @@ namespace NVUpdateManager.WebScraper.Data
         {
             return new Dictionary<string, int>
             {
-                { "GeForce", 120 }
+                { "GeForce RTX 30 Series", 120 }
             };
         }
 
