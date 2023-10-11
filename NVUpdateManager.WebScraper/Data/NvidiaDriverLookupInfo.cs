@@ -8,7 +8,8 @@ namespace NVUpdateManager.WebScraper.Data
         {
             return new Dictionary<string, int>
             {
-                { "GeForce RTX 30 Series", 120 }
+                { "GeForce RTX 30 Series", 120 },
+                { "GeForce 16 Series", 112 }
             };
         }
 
@@ -16,7 +17,8 @@ namespace NVUpdateManager.WebScraper.Data
         {
             return new Dictionary<string, int>
             {
-                { "GeForce RTX 3080", 929 }
+                { "GeForce RTX 3080", 929 },
+                { "GeForce GTX 1660 SUPER", 910 }
             };
         }
 
