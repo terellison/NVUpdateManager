@@ -1,9 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NVUpdateManager.Core;
 using NVUpdateManager.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NVUpdateManager.Core.Tests
 {
