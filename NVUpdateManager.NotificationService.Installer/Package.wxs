@@ -36,7 +36,7 @@
 				<!-- Copies the NVUpdateManager.NotificationService.exe file using the
                      project reference preprocessor variables -->
 				<File Id="NVUpdateManager.NotificationService.exe"
-                      Source="$(var.NVUpdateManager.NotificationService.TargetDir)publish\NVUpdateManager.NotificationService.exe"
+                      Source="$(var.NVUpdateManager.NotificationService.TargetDir)NVUpdateManager.NotificationService.exe"
                       KeyPath="true" />
 
 				<!-- Remove all files from the INSTALLFOLDER on uninstall -->
@@ -62,13 +62,13 @@
 
 			<Component Id="appsettings">
 				<File Id="appsettings.json"
-					  Source="$(var.NVUpdateManager.NotificationService.TargetDir)publish\appsettings.json"
+					  Source="$(var.NVUpdateManager.NotificationService.TargetDir)appsettings.json"
 					  KeyPath="true" />
 			</Component>
 			
 			<Component Id="sni">
 				<File Id="sni.dll"
-					  Source="$(var.NVUpdateManager.NotificationService.TargetDir)publish\sni.dll"
+					  Source="$(var.NVUpdateManager.NotificationService.TargetDir)sni.dll"
 					  KeyPath="true" />
 			</Component>
 		</DirectoryRef>
