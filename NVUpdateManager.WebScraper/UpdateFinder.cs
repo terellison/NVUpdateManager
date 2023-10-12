@@ -2,97 +2,99 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
+using System.Net.Http;
+using System.Threading.Tasks;
+using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
 using NVUpdateManager.WebScraper.Data;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Support.UI;
-using WebDriverManager;
-using WebDriverManager.DriverConfigs.Impl;
+using static NVUpdateManager.WebScraper.Data.NvidiaDriverLookupInfo;
 
 namespace NVUpdateManager.WebScraper
 {
     public static class UpdateFinder
     {
-        private const string _searchUrl = "https://www.nvidia.com/Download/Find.aspx";
-        private static IWebDriver _driver;
-
-        public static UpdateInfo FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
+        public static async Task<UpdateInfo> FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
         {
-            var options = new EdgeOptions();
+            // TODO: Deduce arguments, make api call, parse the HTML result
 
-            options.AddArgument("--no-sandbox");
-            options.AddArguments("--disable-dev-shm-usage");
+            var productSeriesId = GetProductSeriesSearchValue()[gpuSeries];
 
-            var file = new DriverManager().SetUpDriver(new EdgeConfig(), "Latest");
+            var productFamilyId = GetProductFamilySearchValue()[gpuName];
 
-            _driver = new EdgeDriver(Path.GetDirectoryName(file), options);
 
-            UpdateInfo info;
+            var initialURI = $"https://www.nvidia.com/Download/processFind.aspx?psid={productSeriesId}&pfid={productFamilyId}&osid=57&lid=1&whql=&lang=en-us&ctk=0&qnfslb=00&dtcid=1";
 
-            try
+            var updateHtml = string.Empty;
+            using(var client = new HttpClient())
             {
-                _driver.Url = _searchUrl;
+                var driverListResponse = await client.GetAsync(initialURI);
 
-                SelectOptionFromSelector("selProductSeriesType", driverType);
+                var latestUpdateLink = ParseLinkToUpdate(await driverListResponse.Content.ReadAsStringAsync());
 
-                SelectOptionFromSelector("selProductSeries", gpuSeries);
-
-                SelectOptionFromSelector("selProductFamily", gpuName);
-
-                SelectOptionFromSelector("ddWHQL", "Recommended/Certified"); // We only want recommended drivers
-
-                var searchButton = _driver.FindElement(By.CssSelector("btn_drvr_lnk_txt"));
-
-                searchButton.Click();
-
-                Thread.Sleep(500); // We should use an event to know when the page is ready instead of waiting
-
-                NavigateToLatestDriver();
-
-                info = GetLatestDriverInfo();
+                updateHtml = await (await client.GetAsync(latestUpdateLink)).Content.ReadAsStringAsync();
             }
-            finally { _driver.Quit(); }
 
-            _driver.Dispose();
-
-
-            return info;
+            return await ParseUpdateInfo(updateHtml);
         }
 
-        private static UpdateInfo GetLatestDriverInfo()
+        private static string ParseLinkToUpdate(string html)
         {
-            var versionNumber = _driver.FindElement(By.Id("tdVersion")).Text
-                                       .Split(' ')
-                                       .First();
-            var releaseDate = _driver.FindElement(By.Id("tdReleaseDate")).Text;
-            var details = _driver.FindElement(By.Id("tab1_content"))
-                                 .GetAttribute("innerHTML")
-                                 .Trim();
+            var parser = new HtmlParser();
 
-            _driver.Url = _driver.FindElement(By.Id("lnkDwnldBtn")).GetAttribute("href");
+            var updateTable = parser.ParseDocument(html);
 
-            var downloadLink = _driver.FindElements(By.CssSelector("a"))
-                                      .FirstOrDefault(x => x.GetAttribute("innerHTML").Contains("btn_drvr_lnk_txt"))
-                                      .GetAttribute("href");
+            var latestDriver = updateTable.All.First(x => x.Id == "driverList");
 
-            return new UpdateInfo(versionNumber, releaseDate, details, downloadLink);
+            var result = "https:";
+            result += latestDriver.QuerySelector("a").GetAttribute("href");
+
+            return result;
         }
 
-        private static void NavigateToLatestDriver()
+        private static async Task<UpdateInfo> ParseUpdateInfo(string html)
         {
-            var latestDriver = _driver.FindElement(By.Id("driverList"))
-                                      .FindElements(By.CssSelector("td"))
-                                      .FirstOrDefault(x => x.GetAttribute("class") == "gridItem driverName");
+            var parser = new HtmlParser();
 
-            latestDriver?.FindElement(By.CssSelector("a")).Click();
+            var updatePage = parser.ParseDocument(html);
+
+            var versionNumber = updatePage.QuerySelectorAll("td")
+                .FirstOrDefault(x => x.Id == "tdVersion")
+                .Text()
+                .Trim();
+
+            versionNumber = versionNumber.Substring(0, versionNumber.IndexOf('W')).TrimEnd();
+
+
+            var releaseDate = updatePage.All.First(x => x.Id == "tdReleaseDate").InnerHtml.Trim();
+            var details = updatePage.All.First(x => x.Id == "tab1_content").InnerHtml.Trim();
+
+            var url = "https://nvidia.com";
+                
+            url += updatePage.QuerySelectorAll("a")
+                             .FirstOrDefault(x => x.InnerHtml.Contains("btn_drvr_lnk_txt"))
+                             .GetAttribute("href");
+
+            url = await GetActualDownloadLink(url);
+
+            return new UpdateInfo(versionNumber, releaseDate, details, url);
         }
 
-        private static void SelectOptionFromSelector(string selectorId, string toSelect)
+        private static async Task<string> GetActualDownloadLink(string url)
         {
-            var selector = new SelectElement(_driver.FindElement(By.Id(selectorId)));
+            HttpResponseMessage response;
 
-            selector.SelectByText(toSelect);
+            using(var client  = new HttpClient())
+            {
+                response = await client.GetAsync(url);
+            }
+
+            var html = await response.Content.ReadAsStringAsync();
+
+            var downloadPage = new HtmlParser().ParseDocument(html);
+
+            var result = "https:";
+
+            return result + downloadPage.QuerySelector("btn_drvr_lnk_txt").ParentElement.GetAttribute("href");
         }
 
         public static string DownloadUpdate(string updateLink)

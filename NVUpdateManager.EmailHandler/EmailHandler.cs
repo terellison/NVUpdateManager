@@ -8,9 +8,20 @@ namespace NVUpdateManager.EmailHandler
     public class EmailInfo
     {
         public string Subject { get; set; }
-        public string Body { get; set; }
+        public string EmailBody { get; set; }
 
-        public string Email { get; set; }
+        public string To { get; set; }
+
+        public string From { get; set; }
+
+        public string Priority { get; set; }
+    }
+
+    public enum SendPriority
+    {
+        Low,
+        Normal,
+        High,
     }
 
 
@@ -66,9 +77,11 @@ namespace NVUpdateManager.EmailHandler
             try
             {
                 var emailObj = new EmailInfo();
-                emailObj.Email = to;
+                emailObj.To = to;
                 emailObj.Subject = subject;
-                emailObj.Body = body;
+                emailObj.EmailBody = body;
+                emailObj.From = "unused2";
+                emailObj.Priority = "Normal";
 
 
                 string json = System.Text.Json.JsonSerializer.Serialize(emailObj, typeof(EmailInfo));

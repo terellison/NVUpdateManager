@@ -1,8 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static NVUpdateManager.EmailHandler.EmailHandler;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NVUpdateManager.EmailHandler.Tests
 {

@@ -6,10 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Selenium.Support" Version="4.10.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.10.0" />
-    <PackageReference Include="Selenium.WebDriver.MSEdgeDriver" Version="114.0.1823.43" />
-    <PackageReference Include="WebDriverManager" Version="2.16.2" />
+    <PackageReference Include="AngleSharp" Version="1.0.5" />
   </ItemGroup>
 
 </Project>

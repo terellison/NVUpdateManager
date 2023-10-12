@@ -1,4 +1,3 @@
-using NVUpdateManager.Core;
 using NVUpdateManager.Core.Data;
 using NVUpdateManager.Core.Interfaces;
 using NVUpdateManager.Listener.Data;

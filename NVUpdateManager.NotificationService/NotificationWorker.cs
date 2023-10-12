@@ -5,7 +5,6 @@ using NVUpdateManager.WebScraper.Data;
 using NVUpdateManager.Core;
 using Microsoft.Extensions.Options;
 using NVUpdateManager.NotificationService.Data;
-using System.Diagnostics.Contracts;
 
 namespace NVUpdateManager.NotificationService
 {
@@ -61,7 +60,7 @@ namespace NVUpdateManager.NotificationService
         {
             GetGPUSearchParams(currentDriver, out string gpuSeries, out string gpuName, out string driverType); // Let this throw normally
 
-            var updateInfo = FindLatestUpdate(gpuSeries, gpuName, driverType);
+            var updateInfo = FindLatestUpdate(gpuSeries, gpuName, driverType).Result;
 
             try
             {
@@ -113,8 +112,6 @@ namespace NVUpdateManager.NotificationService
                 ConfigureLogicAppEndpoint(_options.Value.Entropy, _options.Value.EncryptedAzLogicAppEndpoint);
                 ConfigureAddresses(_options.Value.NotificationAddress);
             }
-
-            
 
             SendNotificationEmail($"New Game Ready Driver update available",
                 info.ToString());
