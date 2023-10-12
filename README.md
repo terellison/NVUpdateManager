@@ -13,8 +13,10 @@ Use this as the sample payload:
 
 ```json
 {
-    "body": "<description>",
-    "email": "<email-address>",
+    "emailbody": "<description>",
+    "to": "<email-address>",
+    "from": "<email-address>",
+    "priority": "<description>",
     "subject": "<description>"
 }
 ```
@@ -22,7 +24,7 @@ Use this as the sample payload:
 - Installation instructions
   -   Download and unzip [NVUpdateManager.NotificationService.zip](https://github.com/terellison/NVUpdateManager/releases/latest/download/NVUpdateManager.NotificationService.zip)
   -   Run `NVUpdateManager.NotificationService.Installer.msi`
-  -   Configure the drivers you want to search for in `C:\Program Files (x86)\Terry Ellison\NVUpdateManager.NotificationService\appsettings.json`
+  -   Configure the drivers you want to search for in `C:\Program Files\NVUpdateManager.NotificationService\appsettings.json`
   -   Start the service in the Windows Services manager
 
 ## Functionality in development
