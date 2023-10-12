@@ -21,18 +21,20 @@ jobs:
           dotnet-version: 6.0.x
       - name: Restore dependencies
         run: dotnet restore
+      - name: Install wix
+        run: dotnet tool install --global wix
       - name: Build installer project
         run: |
           $devenv_location = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" '-property' productPath
           $devenv_location = $devenv_location.replace('exe','com')
           echo "DEVENV_LOCATION=$devenv_location"
-          $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.vdproj`"".Split(" ")
+          $args = ".\NVUpdateManager.sln /Deploy Release /Project `"NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.wixproj`"".Split(" ")
           Write-Host running '& "$devenv_location" $args'
           & "$devenv_location" $args
       - name: Compress archive
         run: |
-          ls .\NVUpdateManager.NotificationService.Installer\
-          Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
+          ls .\NVUpdateManager.NotificationService.Installer\bin\x64\Release
+          Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\bin\x64\Release* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
       - name: Upload zip file
         uses: actions/upload-artifact@v3
         with:
