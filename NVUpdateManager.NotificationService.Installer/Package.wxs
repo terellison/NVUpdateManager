@@ -18,14 +18,11 @@
 
 		<!-- Define the directory structure -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
+			<Directory Id="ProgramFiles64Folder">
 
-				<!-- Create a folder inside program files -->
-				<Directory Id="ROOTDIRECTORY" Name="$(var.Manufacturer)">
-
-					<!-- Create a folder within the parent folder given the name -->
-					<Directory Id="INSTALLFOLDER" Name="$(Name)" />
-				</Directory>
+				<!-- Create a folder within the parent folder given the name -->
+				<Directory Id="INSTALLFOLDER" Name="$(Name)" />
+				
 			</Directory>
 		</Directory>
 
@@ -43,7 +40,7 @@
                       KeyPath="true" />
 
 				<!-- Remove all files from the INSTALLFOLDER on uninstall -->
-				<RemoveFile Id="ALLFILES" Name="*.*" On="both" />
+				<RemoveFile Id="ALLFILES" Name="*.*" On="uninstall" />
 
 				<!-- Tell WiX to install the Service -->
 				<ServiceInstall Id="ServiceInstaller"
@@ -62,11 +59,29 @@
                                 Name="NVUpdateManager.NotificationService"
                                 Wait="true" />
 			</Component>
+
+			<Component Id="appsettings">
+				<File Id="appsettings.json"
+					  Source="$(var.NVUpdateManager.NotificationService.TargetDir)publish\appsettings.json"
+					  KeyPath="true" />
+			</Component>
+			
+			<Component Id="sni">
+				<File Id="sni.dll"
+					  Source="$(var.NVUpdateManager.NotificationService.TargetDir)publish\sni.dll"
+					  KeyPath="true" />
+			</Component>
 		</DirectoryRef>
 
 		<!-- Tell WiX to install the files -->
 		<Feature Id="Service" Title="NVUpdateManager.NotificationService Setup" Level="1">
 			<ComponentRef Id="ServiceExecutable" />
+		</Feature>
+		<Feature Id="appsettingsFile" Title="appsettings setup" Level="1">
+			<ComponentRef Id="appsettings"/>
+		</Feature>
+		<Feature Id="sniFile" Title="sni setup" Level="1">
+			<ComponentRef Id="sni"/>
 		</Feature>
 
 	</Package>
