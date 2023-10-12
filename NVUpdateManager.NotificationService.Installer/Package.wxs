@@ -66,11 +66,6 @@
 					  KeyPath="true" />
 			</Component>
 			
-			<Component Id="sni">
-				<File Id="sni.dll"
-					  Source="$(var.NVUpdateManager.NotificationService.TargetDir)sni.dll"
-					  KeyPath="true" />
-			</Component>
 		</DirectoryRef>
 
 		<!-- Tell WiX to install the files -->
@@ -79,9 +74,6 @@
 		</Feature>
 		<Feature Id="appsettingsFile" Title="appsettings setup" Level="1">
 			<ComponentRef Id="appsettings"/>
-		</Feature>
-		<Feature Id="sniFile" Title="sni setup" Level="1">
-			<ComponentRef Id="sni"/>
 		</Feature>
 
 	</Package>

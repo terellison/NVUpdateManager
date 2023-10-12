@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/terellison/NVUpdateManager</PackageProjectUrl>
     <RepositoryUrl>$(ProjectURL)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +31,6 @@
 
   <ItemGroup>
     <None Include="appsettings.json" CopyToPublishDirectory="Always" />
-    <None Include="appsettings.json" CopyToPublishDirectory="Never" />
+    <None Include="appsettings.Development.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 </Project>
