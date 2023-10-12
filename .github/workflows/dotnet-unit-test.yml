@@ -23,8 +23,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: |
-        ls .\NVUpdateManager.NotificationService\bin\Release\net6.0-windows\
-        dotnet build -c Release --no-restore
+      run: dotnet build -c Release --no-restore
     - name: Test
       run: dotnet test -c Release --no-build --verbosity normal
