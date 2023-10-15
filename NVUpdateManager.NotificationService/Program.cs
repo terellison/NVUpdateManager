@@ -2,7 +2,6 @@ using NVUpdateManager.NotificationService.Data;
 using static NVUpdateManager.EmailHandler.EmailHandler;
 using CliWrap;
 using NVUpdateManager.Core.Extensions;
-using NVUpdateManager.Core.Interfaces;
 using NVUpdateManager.Web.Extensions;
 
 namespace NVUpdateManager.NotificationService

@@ -1,5 +1,4 @@
 using NVUpdateManager.Core.Interfaces;
-using static NVUpdateManager.Web.UpdateFinder;
 using static NVUpdateManager.EmailHandler.EmailHandler;
 using NVUpdateManager.Core;
 using Microsoft.Extensions.Options;
