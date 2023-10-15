@@ -11,9 +11,16 @@ using static NVUpdateManager.Web.Data.NvidiaDriverLookupInfo;
 
 namespace NVUpdateManager.Web
 {
-    public static class UpdateFinder
+    public class UpdateFinder
     {
-        public static async Task<UpdateInfo> FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
+        private readonly HttpClient _httpClient;
+
+        public UpdateFinder(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public async Task<UpdateInfo> FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
         {
             // TODO: Deduce arguments, make api call, parse the HTML result
 
@@ -37,7 +44,7 @@ namespace NVUpdateManager.Web
             return await ParseUpdateInfo(updateHtml);
         }
 
-        private static string ParseLinkToUpdate(string html)
+        private string ParseLinkToUpdate(string html)
         {
             var parser = new HtmlParser();
 
@@ -51,7 +58,7 @@ namespace NVUpdateManager.Web
             return result;
         }
 
-        private static async Task<UpdateInfo> ParseUpdateInfo(string html)
+        private async Task<UpdateInfo> ParseUpdateInfo(string html)
         {
             var parser = new HtmlParser();
 
@@ -79,7 +86,7 @@ namespace NVUpdateManager.Web
             return new UpdateInfo(versionNumber, releaseDate, details, url);
         }
 
-        private static async Task<string> GetActualDownloadLink(string url)
+        private async Task<string> GetActualDownloadLink(string url)
         {
             HttpResponseMessage response;
 
@@ -97,7 +104,7 @@ namespace NVUpdateManager.Web
             return result + downloadPage.QuerySelector("btn_drvr_lnk_txt").ParentElement.GetAttribute("href");
         }
 
-        public static string DownloadUpdate(string updateLink)
+        public string DownloadUpdate(string updateLink)
         {
             var downloadLocation = Path.GetRandomFileName();
 
