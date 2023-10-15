@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace NVUpdateManager.Web.Data
+namespace NVUpdateManager.Core.Data
 {
     public class UpdateInfo
     {

@@ -6,12 +6,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
-using NVUpdateManager.Web.Data;
+using NVUpdateManager.Core.Data;
+using NVUpdateManager.Core.Interfaces;
 using static NVUpdateManager.Web.Data.NvidiaDriverLookupInfo;
 
 namespace NVUpdateManager.Web
 {
-    public class UpdateFinder
+    public class UpdateFinder : IUpdateFinder
     {
         private readonly HttpClient _httpClient;
 

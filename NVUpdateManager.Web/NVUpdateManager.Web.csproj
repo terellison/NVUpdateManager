@@ -9,4 +9,8 @@
     <PackageReference Include="AngleSharp" Version="1.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NVUpdateManager.Core\NVUpdateManager.Core.csproj" />
+  </ItemGroup>
+
 </Project>

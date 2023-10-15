@@ -4,7 +4,7 @@ using static NVUpdateManager.EmailHandler.EmailHandler;
 using NVUpdateManager.Core;
 using Microsoft.Extensions.Options;
 using NVUpdateManager.NotificationService.Data;
-using NVUpdateManager.Web.Data;
+using NVUpdateManager.Core.Data;
 
 namespace NVUpdateManager.NotificationService
 {
