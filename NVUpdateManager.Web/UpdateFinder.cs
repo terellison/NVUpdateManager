@@ -23,24 +23,17 @@ namespace NVUpdateManager.Web
 
         public async Task<UpdateInfo> FindLatestUpdate(string gpuSeries, string gpuName, string driverType)
         {
-            // TODO: Deduce arguments, make api call, parse the HTML result
-
             var productSeriesId = GetProductSeriesSearchValue()[gpuSeries];
 
             var productFamilyId = GetProductFamilySearchValue()[gpuName];
 
-
             var initialURI = $"https://www.nvidia.com/Download/processFind.aspx?psid={productSeriesId}&pfid={productFamilyId}&osid=57&lid=1&whql=&lang=en-us&ctk=0&qnfslb=00&dtcid=1";
 
-            var updateHtml = string.Empty;
-            using (var client = new HttpClient())
-            {
-                var driverListResponse = await client.GetAsync(initialURI);
+            var driverListResponse = await _httpClient.GetAsync(initialURI);
 
-                var latestUpdateLink = ParseLinkToUpdate(await driverListResponse.Content.ReadAsStringAsync());
+            var latestUpdateLink = ParseLinkToUpdate(await driverListResponse.Content.ReadAsStringAsync());
 
-                updateHtml = await (await client.GetAsync(latestUpdateLink)).Content.ReadAsStringAsync();
-            }
+            string updateHtml = await (await _httpClient.GetAsync(latestUpdateLink)).Content.ReadAsStringAsync();
 
             return await ParseUpdateInfo(updateHtml);
         }
@@ -91,11 +84,8 @@ namespace NVUpdateManager.Web
         {
             HttpResponseMessage response;
 
-            using (var client = new HttpClient())
-            {
-                response = await client.GetAsync(url);
-            }
-
+            response = await _httpClient.GetAsync(url);
+            
             var html = await response.Content.ReadAsStringAsync();
 
             var downloadPage = new HtmlParser().ParseDocument(html);
@@ -105,13 +95,15 @@ namespace NVUpdateManager.Web
             return result + downloadPage.QuerySelector("btn_drvr_lnk_txt").ParentElement.GetAttribute("href");
         }
 
-        public string DownloadUpdate(string updateLink)
+        public async Task<string> DownloadUpdate(string updateLink)
         {
             var downloadLocation = Path.GetRandomFileName();
 
-            using (var client = new WebClient())
+            var response = await _httpClient.GetAsync(updateLink);
+
+            using(var fs = new FileStream(downloadLocation, FileMode.CreateNew))
             {
-                client.DownloadFile(new Uri(updateLink), downloadLocation);
+                await response.Content.CopyToAsync(fs);
             }
 
             var newLocation = Path.ChangeExtension(downloadLocation, ".exe");
@@ -121,6 +113,4 @@ namespace NVUpdateManager.Web
             return Path.GetFullPath(newLocation);
         }
     }
-
-
 }

@@ -5,7 +5,7 @@ namespace NVUpdateManager.Core.Interfaces
 {
     public interface IUpdateFinder
     {
-        string DownloadUpdate(string updateLink);
+        Task<string> DownloadUpdate(string updateLink);
         Task<UpdateInfo> FindLatestUpdate(string gpuSeries, string gpuName, string driverType);
     }
 }
