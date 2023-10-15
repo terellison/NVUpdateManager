@@ -1,10 +1,10 @@
 using NVUpdateManager.Core.Interfaces;
-using static NVUpdateManager.WebScraper.UpdateFinder;
+using static NVUpdateManager.Web.UpdateFinder;
 using static NVUpdateManager.EmailHandler.EmailHandler;
-using NVUpdateManager.WebScraper.Data;
 using NVUpdateManager.Core;
 using Microsoft.Extensions.Options;
 using NVUpdateManager.NotificationService.Data;
+using NVUpdateManager.Web.Data;
 
 namespace NVUpdateManager.NotificationService
 {
