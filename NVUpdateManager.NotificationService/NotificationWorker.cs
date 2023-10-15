@@ -34,7 +34,7 @@ namespace NVUpdateManager.NotificationService
                 _logger.LogInformation("Checking for new driver update at {Now}", DateTime.Now);
 
                 var currentDriverInfo = await _driverManager.GetInstalledDriverInfo();
-                var newUpdateInfo = CheckForNewUpdate(currentDriverInfo);
+                var newUpdateInfo = await CheckForNewUpdate(currentDriverInfo);
 
                 if (newUpdateInfo != null)
                 {
@@ -58,11 +58,11 @@ namespace NVUpdateManager.NotificationService
             }
         }
 
-        private UpdateInfo? CheckForNewUpdate(DriverInfo currentDriver)
+        private async Task<UpdateInfo?> CheckForNewUpdate(DriverInfo currentDriver)
         {
             GetGPUSearchParams(currentDriver, out string gpuSeries, out string gpuName, out string driverType); // Let this throw normally
 
-            var updateInfo = _updateFinder.FindLatestUpdate(gpuSeries, gpuName, driverType).Result;
+            var updateInfo = await _updateFinder.FindLatestUpdate(gpuSeries, gpuName, driverType);
 
             try
             {
