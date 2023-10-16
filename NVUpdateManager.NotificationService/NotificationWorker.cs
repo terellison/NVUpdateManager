@@ -1,10 +1,9 @@
 using NVUpdateManager.Core.Interfaces;
-using static NVUpdateManager.WebScraper.UpdateFinder;
 using static NVUpdateManager.EmailHandler.EmailHandler;
-using NVUpdateManager.WebScraper.Data;
 using NVUpdateManager.Core;
 using Microsoft.Extensions.Options;
 using NVUpdateManager.NotificationService.Data;
+using NVUpdateManager.Core.Data;
 
 namespace NVUpdateManager.NotificationService
 {
@@ -14,14 +13,16 @@ namespace NVUpdateManager.NotificationService
         private readonly IOptions<EmailConfiguration> _options;
         private readonly IEnumerable<SupportedDriver> _supportedDrivers;
         private readonly IDriverManager _driverManager;
+        private readonly IUpdateFinder _updateFinder;
         private const double ITERATION_TIME_IN_HOURS = 24; // Time between checks for updates
         
-        public NotificationWorker(ILogger<NotificationWorker> logger, IOptions<EmailConfiguration> options, IEnumerable<SupportedDriver> supportedDrivers, IDriverManager driverManager)
+        public NotificationWorker(ILogger<NotificationWorker> logger, IOptions<EmailConfiguration> options, IEnumerable<SupportedDriver> supportedDrivers, IDriverManager driverManager, IUpdateFinder updateFinder)
         {
             _logger = logger;
             _options = options;
             _supportedDrivers = supportedDrivers;
             _driverManager = driverManager;
+            _updateFinder = updateFinder;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -32,7 +33,7 @@ namespace NVUpdateManager.NotificationService
                 _logger.LogInformation("Checking for new driver update at {Now}", DateTime.Now);
 
                 var currentDriverInfo = await _driverManager.GetInstalledDriverInfo();
-                var newUpdateInfo = CheckForNewUpdate(currentDriverInfo);
+                var newUpdateInfo = await CheckForNewUpdate(currentDriverInfo);
 
                 if (newUpdateInfo != null)
                 {
@@ -56,11 +57,11 @@ namespace NVUpdateManager.NotificationService
             }
         }
 
-        private UpdateInfo? CheckForNewUpdate(DriverInfo currentDriver)
+        private async Task<UpdateInfo?> CheckForNewUpdate(DriverInfo currentDriver)
         {
             GetGPUSearchParams(currentDriver, out string gpuSeries, out string gpuName, out string driverType); // Let this throw normally
 
-            var updateInfo = FindLatestUpdate(gpuSeries, gpuName, driverType).Result;
+            var updateInfo = await _updateFinder.FindLatestUpdate(gpuSeries, gpuName, driverType);
 
             try
             {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.WebScraper", "NVUpdateManager.WebScraper\NVUpdateManager.WebScraper.csproj", "{319091A1-70F2-40AB-95F0-59173D013207}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Web", "NVUpdateManager.Web\NVUpdateManager.Web.csproj", "{319091A1-70F2-40AB-95F0-59173D013207}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Listener", "NVUpdateManager.Listener\NVUpdateManager.Listener.csproj", "{49D645F9-EEF0-48D5-801E-292BB72BF3AA}"
 EndProject

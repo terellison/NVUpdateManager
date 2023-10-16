@@ -2,6 +2,7 @@ using NVUpdateManager.NotificationService.Data;
 using static NVUpdateManager.EmailHandler.EmailHandler;
 using CliWrap;
 using NVUpdateManager.Core.Extensions;
+using NVUpdateManager.Web.Extensions;
 
 namespace NVUpdateManager.NotificationService
 {
@@ -58,6 +59,8 @@ namespace NVUpdateManager.NotificationService
                     });
 
                     services.AddDriverManager();
+
+                    services.AddUpdateFinder();
 
                     services.AddHostedService<NotificationWorker>();
                 })
