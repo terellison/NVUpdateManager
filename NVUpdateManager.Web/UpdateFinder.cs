@@ -42,7 +42,9 @@ namespace NVUpdateManager.Web
 
             var updateTable = parser.ParseDocument(html);
 
-            var latestDriver = updateTable.All.First(x => x.Id == "driverList");
+            var latestDriver = updateTable.All.First(
+                x => x.Id == "driverList"
+                && x.QuerySelector("a").TextContent.Contains("Game Ready Driver"));
 
             var result = "https:";
             result += latestDriver.QuerySelector("a").GetAttribute("href");
