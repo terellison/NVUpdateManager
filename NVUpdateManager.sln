@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Web", "NVUpdateManager.Web\NVUpdateManager.Web.csproj", "{319091A1-70F2-40AB-95F0-59173D013207}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Listener", "NVUpdateManager.Listener\NVUpdateManager.Listener.csproj", "{49D645F9-EEF0-48D5-801E-292BB72BF3AA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Core", "NVUpdateManager.Core\NVUpdateManager.Core.csproj", "{5E2A3AB8-9E3E-4EF6-BF5F-4293E1F1EC5B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.NotificationService", "NVUpdateManager.NotificationService\NVUpdateManager.NotificationService.csproj", "{AF50B2B1-A028-4978-AFA0-755D6359893D}"
@@ -47,22 +45,6 @@ Global
 		{319091A1-70F2-40AB-95F0-59173D013207}.Release|x64.Build.0 = Release|Any CPU
 		{319091A1-70F2-40AB-95F0-59173D013207}.Release|x86.ActiveCfg = Release|x86
 		{319091A1-70F2-40AB-95F0-59173D013207}.Release|x86.Build.0 = Release|x86
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|x64.Build.0 = Debug|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|x86.ActiveCfg = Debug|x86
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Debug|x86.Build.0 = Debug|x86
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|ARM64.Build.0 = Release|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|x64.ActiveCfg = Release|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|x64.Build.0 = Release|Any CPU
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|x86.ActiveCfg = Release|x86
-		{49D645F9-EEF0-48D5-801E-292BB72BF3AA}.Release|x86.Build.0 = Release|x86
 		{5E2A3AB8-9E3E-4EF6-BF5F-4293E1F1EC5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E2A3AB8-9E3E-4EF6-BF5F-4293E1F1EC5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E2A3AB8-9E3E-4EF6-BF5F-4293E1F1EC5B}.Debug|ARM64.ActiveCfg = Debug|Any CPU

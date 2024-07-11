@@ -1,14 +1,16 @@
 using NVUpdateManager.NotificationService.Data;
+using NVUpdateManager.NotificationService.Services;
 using static NVUpdateManager.EmailHandler.EmailHandler;
 using CliWrap;
 using NVUpdateManager.Core.Extensions;
 using NVUpdateManager.Web.Extensions;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace NVUpdateManager.NotificationService
 {
     public class Program
     {
-        private const string ServiceName = $"{nameof(NVUpdateManager)}.{nameof(NotificationService)}";
+        private const string ServiceName = $"{nameof(NVUpdateManager)}.{nameof(NVUpdateManager.NotificationService)}";
         private static string Usage =
             @"
                 Run with no arguments to start the service normally
@@ -24,7 +26,7 @@ namespace NVUpdateManager.NotificationService
                     /Uninstall: Uinstall existing service
             ";
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             if(args.Length > 0) 
             {
@@ -32,10 +34,6 @@ namespace NVUpdateManager.NotificationService
                 return;
             }
             IHost host = Host.CreateDefaultBuilder(args)
-                .UseWindowsService(options =>
-                {
-                    options.ServiceName = ServiceName;
-                })
                 .ConfigureServices(( hostContext, services) =>
                 {
                     IConfiguration configuration = hostContext.Configuration;
@@ -44,7 +42,7 @@ namespace NVUpdateManager.NotificationService
 
                     var sectionName = $"{nameof(SupportedDriver)}s";
 
-                    var supportedDrivers= new List<SupportedDriver>();
+                    var supportedDrivers = new List<SupportedDriver>();
 
                     configuration.GetSection(sectionName).Bind(supportedDrivers);
 
@@ -62,11 +60,13 @@ namespace NVUpdateManager.NotificationService
 
                     services.AddUpdateFinder();
 
-                    services.AddHostedService<NotificationWorker>();
+                    services.TryAddSingleton<INotificationService, NVNotificationService>();
                 })
                 .Build();
 
-            host.Run();
+            var ns = ActivatorUtilities.GetServiceOrCreateInstance<NVNotificationService>(host.Services);
+
+            await ns.Run();
         }
 
         private static void ParseArguments(string[] args)
