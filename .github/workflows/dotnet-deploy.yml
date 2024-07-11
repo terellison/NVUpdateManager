@@ -21,12 +21,10 @@ jobs:
           dotnet-version: 6.0.x
       - name: Restore dependencies
         run: dotnet restore
-      - name: Install wix
-        run: dotnet tool install --global wix
-      - name: Build installer project
+      - name: Build NotificationService project
         run: dotnet build -c Release --no-restore
       - name: Compress archive
-        run: Compress-Archive -Path .\NVUpdateManager.NotificationService.Installer\bin\x64\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
+        run: Compress-Archive -Path .\NVUpdateManager.NotificationService\bin\x64\Release\* -DestinationPath .\NVUpdateManager.NotificationService.zip -CompressionLevel Fastest
       - name: Upload zip file
         uses: actions/upload-artifact@v3
         with:
