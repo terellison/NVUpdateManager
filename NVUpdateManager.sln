@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.Core.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NVUpdateManager.EmailHandler.Tests", "NVUpdateManager.EmailHandler.Tests\NVUpdateManager.EmailHandler.Tests.csproj", "{9A524B30-593B-4A86-A649-DB7B3977B144}"
 EndProject
-Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "NVUpdateManager.NotificationService.Installer", "NVUpdateManager.NotificationService.Installer\NVUpdateManager.NotificationService.Installer.wixproj", "{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,22 +123,6 @@ Global
 		{9A524B30-593B-4A86-A649-DB7B3977B144}.Release|x64.Build.0 = Release|Any CPU
 		{9A524B30-593B-4A86-A649-DB7B3977B144}.Release|x86.ActiveCfg = Release|x86
 		{9A524B30-593B-4A86-A649-DB7B3977B144}.Release|x86.Build.0 = Release|x86
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|Any CPU.Build.0 = Debug|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|ARM64.Build.0 = Debug|ARM64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|x64.ActiveCfg = Debug|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|x64.Build.0 = Debug|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|x86.ActiveCfg = Debug|x86
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Debug|x86.Build.0 = Debug|x86
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|Any CPU.ActiveCfg = Release|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|Any CPU.Build.0 = Release|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|ARM64.ActiveCfg = Release|ARM64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|ARM64.Build.0 = Release|ARM64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|x64.ActiveCfg = Release|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|x64.Build.0 = Release|x64
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|x86.ActiveCfg = Release|x86
-		{833C87FE-5CCD-4EE7-82B8-F17DE1ED80ED}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
