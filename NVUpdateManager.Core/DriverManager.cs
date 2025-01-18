@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NVUpdateManager.Core.Data;
 using NVUpdateManager.Core.Interfaces;
@@ -58,23 +59,25 @@ namespace NVUpdateManager.Core
             throw new NotImplementedException();
         }
 
-        private Task<string> DownloadDriver(string downloadLink)
+        private async Task<string> DownloadDriver(string downloadLink)
         {
-            return Task.Run(() =>
+            var downloadPath = Path.GetRandomFileName();
+
+            using (var client = new HttpClient())
             {
-                var downloadPath = Path.GetRandomFileName();
+                var response = await client.GetAsync(downloadPath);
+                response.EnsureSuccessStatusCode();
 
-                using (var client = new WebClient())
-                {
-                    client.DownloadFile(new Uri(downloadLink), downloadPath);
-                }
+                var bytes = await response.Content.ReadAsByteArrayAsync();
 
-                var updateFile = Path.ChangeExtension(downloadPath, ".exe");
+                await File.WriteAllBytesAsync(downloadPath, bytes);
+            }
 
-                File.Move(downloadPath, updateFile);
+            var updateFile = Path.ChangeExtension(downloadPath, ".exe");
 
-                return updateFile;
-            });
+            File.Move(downloadPath, updateFile);
+
+            return updateFile;
         }
     }
 }

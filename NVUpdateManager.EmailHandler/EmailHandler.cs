@@ -45,9 +45,9 @@ namespace NVUpdateManager.EmailHandler
             // Create a new instance of the RNGCryptoServiceProvider.
             // Fill the array with a random value.
 
-            using (var rngCSP = new RNGCryptoServiceProvider())
+            using (var rng = RandomNumberGenerator.Create())
             {
-                rngCSP.GetBytes(entropy);
+                rng.GetBytes(entropy);
             }
 
             byte[] encryptedData = ProtectedData.Protect(toEncrypt, entropy, DataProtectionScope.LocalMachine);
