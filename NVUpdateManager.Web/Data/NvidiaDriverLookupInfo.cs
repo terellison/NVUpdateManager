@@ -28,7 +28,8 @@ namespace NVUpdateManager.Web.Data
             {
                 { "GeForce RTX 3080", 929 },
                 { "GeForce RTX 4090", 995 },
-                { "GeForce GTX 1660 SUPER", 910 }
+                { "GeForce GTX 1660 SUPER", 910 },
+                { "GeForce RTX 4070", 1015 }
             };
         }
 
