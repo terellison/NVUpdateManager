@@ -1,8 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
-using AngleSharp.Dom;
+using System.Web;
 using AngleSharp.Html.Parser;
 using NVUpdateManager.Core.Data;
 using NVUpdateManager.Core.Interfaces;
@@ -31,9 +32,20 @@ namespace NVUpdateManager.Web
 
             var latestUpdateLink = ParseLinkToUpdate(await driverListResponse.Content.ReadAsStringAsync());
 
-            string updateHtml = await (await _httpClient.GetAsync(latestUpdateLink)).Content.ReadAsStringAsync();
+            var updateNumber = latestUpdateLink.Split('/')
+                .Where(v => int.TryParse(v, out _))
+                .First();
 
-            return await ParseUpdateInfo(updateHtml);
+            var downloadDetailsURL = $"https://www.nvidia.com/services/com.nvidia.services/AEMDriversContent/getDownloadDetails?{'{' + $"%22ddID%22:%22{updateNumber}%22" + '}'}";
+
+            var downloadDetails = (await GetDownloadDetails(downloadDetailsURL))
+                .GetProperty("driverDetails")
+                .GetProperty("IDS")
+                .EnumerateArray()
+                .ElementAt(0)
+                .GetProperty("downloadInfo");
+
+            return ParseUpdateInfo(downloadDetails);
         }
 
         private string ParseLinkToUpdate(string html)
@@ -52,48 +64,26 @@ namespace NVUpdateManager.Web
             return result;
         }
 
-        private async Task<UpdateInfo> ParseUpdateInfo(string html)
+        private UpdateInfo ParseUpdateInfo(JsonElement root)
         {
-            var parser = new HtmlParser();
 
-            var updatePage = parser.ParseDocument(html);
+            var versionNumber = root.GetProperty("Version")
+                .GetString();
 
-            var versionNumber = updatePage.QuerySelectorAll("td")
-                .FirstOrDefault(x => x.Id == "tdVersion")
-                .Text()
-                .Trim();
+            var releaseDate = root.GetProperty("ReleaseDateTime")
+                .GetString();
 
-            versionNumber = versionNumber.Substring(0, versionNumber.IndexOf('W')).TrimEnd();
+            var notes = root.GetProperty("ReleaseNotes")
+                .GetString();
 
+            var details = HttpUtility.UrlDecode(notes);
 
-            var releaseDate = updatePage.All.First(x => x.Id == "tdReleaseDate").InnerHtml.Trim();
-            var details = updatePage.All.First(x => x.Id == "tab1_content").InnerHtml.Trim();
-
-            var url = "https://nvidia.com";
-
-            url += updatePage.QuerySelectorAll("a")
-                             .FirstOrDefault(x => x.InnerHtml.Contains("btn_drvr_lnk_txt"))
-                             .GetAttribute("href");
-
-            url = await GetActualDownloadLink(url);
+            var url = root.GetProperty("DownloadURL")
+                .GetString();
 
             return new UpdateInfo(versionNumber, releaseDate, details, url);
         }
 
-        private async Task<string> GetActualDownloadLink(string url)
-        {
-            HttpResponseMessage response;
-
-            response = await _httpClient.GetAsync(url);
-            
-            var html = await response.Content.ReadAsStringAsync();
-
-            var downloadPage = new HtmlParser().ParseDocument(html);
-
-            var result = "https:";
-
-            return result + downloadPage.QuerySelector("btn_drvr_lnk_txt").ParentElement.GetAttribute("href");
-        }
 
         public async Task<string> DownloadUpdate(string updateLink)
         {
@@ -111,6 +101,18 @@ namespace NVUpdateManager.Web
             File.Move(downloadLocation, newLocation);
 
             return Path.GetFullPath(newLocation);
+        }
+
+        private async Task<JsonElement> GetDownloadDetails(string url)
+        {
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+
+            JsonDocument doc = JsonDocument.Parse(jsonResponse);
+
+            return doc.RootElement;
         }
     }
 }

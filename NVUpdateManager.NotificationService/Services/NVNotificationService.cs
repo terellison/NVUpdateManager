@@ -14,7 +14,6 @@ namespace NVUpdateManager.NotificationService.Services
         private readonly IEnumerable<SupportedDriver> _supportedDrivers;
         private readonly IDriverManager _driverManager;
         private readonly IUpdateFinder _updateFinder;
-        private const double ITERATION_TIME_IN_HOURS = 24; // Time between checks for updates
 
         public NVNotificationService(ILogger<NVNotificationService> logger, IOptions<EmailConfiguration> options, IEnumerable<SupportedDriver> supportedDrivers, IDriverManager driverManager, IUpdateFinder updateFinder)
         {
