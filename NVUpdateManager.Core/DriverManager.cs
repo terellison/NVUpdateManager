@@ -16,7 +16,7 @@ namespace NVUpdateManager.Core
         {
             return Task.Run(async () =>
             {
-                var updatePath = await DownloadDriver(downloadLink);
+                var updatePath = await DownloadDriverAsync(downloadLink);
                 var extractedUpdatePath = ExtractUpdate(updatePath);
                 return UpdateResult.Success;
             });
@@ -59,7 +59,7 @@ namespace NVUpdateManager.Core
             throw new NotImplementedException();
         }
 
-        private async Task<string> DownloadDriver(string downloadLink)
+        private async Task<string> DownloadDriverAsync(string downloadLink)
         {
             var downloadPath = Path.GetRandomFileName();
 
