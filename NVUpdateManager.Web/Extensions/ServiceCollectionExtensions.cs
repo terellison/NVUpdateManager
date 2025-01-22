@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NVUpdateManager.Core.Interfaces;
-using System.Net.Http;
 
 namespace NVUpdateManager.Web.Extensions
 {
