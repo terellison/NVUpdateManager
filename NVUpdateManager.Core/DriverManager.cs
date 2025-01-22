@@ -12,6 +12,12 @@ namespace NVUpdateManager.Core
 {
     internal sealed class DriverManager : IDriverManager
     {
+        private readonly HttpClient _httpClient;
+        public DriverManager(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
         public Task<UpdateResult> InstallUpdate(string downloadLink)
         {
             return Task.Run(async () =>
@@ -63,9 +69,9 @@ namespace NVUpdateManager.Core
         {
             var downloadPath = Path.GetRandomFileName();
 
-            using (var client = new HttpClient())
+
+            using (var response = await _httpClient.GetAsync(downloadPath))
             {
-                var response = await client.GetAsync(downloadPath);
                 response.EnsureSuccessStatusCode();
 
                 var bytes = await response.Content.ReadAsByteArrayAsync();
