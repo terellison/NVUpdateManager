@@ -9,10 +9,8 @@ namespace NVUpdateManager.Web.Extensions
     {
         public static IServiceCollection AddUpdateFinder(this IServiceCollection services)
         {
-            var client = new HttpClient();
-
-            services.TryAddSingleton<IUpdateFinder>(new UpdateFinder(client));
-
+            services.AddHttpClient<IUpdateFinder, UpdateFinder>();
+            services.TryAddSingleton<IUpdateFinder, UpdateFinder>();
             return services;
         }
     }

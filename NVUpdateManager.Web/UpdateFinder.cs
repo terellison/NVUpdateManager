@@ -11,7 +11,7 @@ using static NVUpdateManager.Web.Data.NvidiaDriverLookupInfo;
 
 namespace NVUpdateManager.Web
 {
-    public class UpdateFinder : IUpdateFinder
+    internal sealed class UpdateFinder : IUpdateFinder
     {
         private readonly HttpClient _httpClient;
 
