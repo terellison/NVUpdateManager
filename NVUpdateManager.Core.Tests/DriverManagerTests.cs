@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NVUpdateManager.Core.Extensions;
 using NVUpdateManager.Core.Interfaces;
 
 namespace NVUpdateManager.Core.Tests
@@ -6,12 +8,14 @@ namespace NVUpdateManager.Core.Tests
     [TestClass()]
     public class DriverManagerTests
     {
-
         private readonly IDriverManager _driverManager;
 
-        public DriverManagerTests(IDriverManager driverManager)
+        public DriverManagerTests()
         {
-            _driverManager = driverManager;
+            var services = new ServiceCollection();
+            services.AddDriverManager();
+            var provider = services.BuildServiceProvider();
+            _driverManager = provider.GetRequiredService<IDriverManager>();
         }
 
         [TestMethod()]
