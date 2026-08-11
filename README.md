@@ -9,7 +9,7 @@ Windows application suite for managing NVIDIA Game Ready Driver updates without 
 
 <b>Game Ready for Ghost of Tsushima: Director’s Cut</b><br> <br> This new Game Ready Driver provides the best gaming experience for the latest new games supporting DLSS 3 technology including Ghost of Tsushima: Director’s Cut. Further support for new titles leveraging NVIDIA DLSS technology includes the launch of Homeworld 3 which supports DLSS Super Resolution.<br> <br> <b>Fixed Gaming Bugs</b><br> <br> <ul>   <li>Ghost of Tsushima DIRECTOR'S CUT: Resizable BAR profile [4597841]</li> </ul>     <br>     <a href="https://www.nvidia.com/en-us/geforce/news/ghost-of-tsushima-geforce-game-ready-driver"> Learn more in our Game Ready Driver article here. </a><br>     <br>     <p align="justify"> <img title="Game Ready Driver" alt="Game Ready Driver" src="https://images.nvidia.com/content/GRD/R550GA6.5/ghost-of-tsushima-geforce-game-ready-driver-gfe-grd-1144x298-banner.jpg" width="100%"> </p></p></p>
 
-## Componenets
+## Components
 
 ### NotificationService
 Windows background service that checks the currently installed Game Ready Driver version and checks the NVIDIA driver search page for a newer version. If it finds an available update, it uses an Azure Logic App to send an email to a user (configured in `appsettings.json`)
