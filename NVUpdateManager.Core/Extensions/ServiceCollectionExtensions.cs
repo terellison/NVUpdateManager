@@ -8,6 +8,7 @@ namespace NVUpdateManager.Core.Extensions
     {
         public static IServiceCollection AddDriverManager(this IServiceCollection services)
         {
+            services.AddHttpClient<IDriverManager, DriverManager>();
             services.TryAddSingleton<IDriverManager, DriverManager>();
             return services;
         }

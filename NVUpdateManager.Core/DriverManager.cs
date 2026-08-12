@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NVUpdateManager.Core.Data;
@@ -12,11 +11,17 @@ namespace NVUpdateManager.Core
 {
     internal sealed class DriverManager : IDriverManager
     {
+        private readonly HttpClient _httpClient;
+        public DriverManager(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
         public Task<UpdateResult> InstallUpdate(string downloadLink)
         {
             return Task.Run(async () =>
             {
-                var updatePath = await DownloadDriver(downloadLink);
+                var updatePath = await DownloadDriverAsync(downloadLink);
                 var extractedUpdatePath = ExtractUpdate(updatePath);
                 return UpdateResult.Success;
             });
@@ -59,13 +64,13 @@ namespace NVUpdateManager.Core
             throw new NotImplementedException();
         }
 
-        private async Task<string> DownloadDriver(string downloadLink)
+        private async Task<string> DownloadDriverAsync(string downloadLink)
         {
             var downloadPath = Path.GetRandomFileName();
 
-            using (var client = new HttpClient())
+
+            using (var response = await _httpClient.GetAsync(downloadPath))
             {
-                var response = await client.GetAsync(downloadPath);
                 response.EnsureSuccessStatusCode();
 
                 var bytes = await response.Content.ReadAsByteArrayAsync();
