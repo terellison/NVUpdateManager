@@ -54,9 +54,49 @@ namespace NVUpdateManager.Core
                         throw new InvalidOperationException("Could not find NVIDIA Game Ready Driver. Ensure that the driver is installed correctly", ex);
                     }
 
-                    return new DriverInfo(nvDriver);
+                    if (nvDriver == null)
+                    {
+                        throw new InvalidOperationException("Could not find NVIDIA Game Ready Driver. Ensure that the driver is installed correctly");
+                    }
+
+                    return new DriverInfo(nvDriver, IsMobileSystem());
                 }
             });
+        }
+
+        /// <summary>
+        /// Reports whether this machine is a laptop. NVIDIA lists desktop and notebook GPUs as
+        /// separate products, and before the Ampere generation both variants carried the same
+        /// name, so the chassis is what tells them apart.
+        /// </summary>
+        private static bool IsMobileSystem()
+        {
+            const string wmiQuery = "SELECT PCSystemType FROM Win32_ComputerSystem";
+
+            // 2 is "Mobile" in the Win32_ComputerSystem.PCSystemType enumeration.
+            const ushort mobileSystem = 2;
+
+            try
+            {
+                using (var systems = new ManagementObjectSearcher(wmiQuery).Get())
+                {
+                    foreach (ManagementBaseObject system in systems)
+                    {
+                        var value = system.Properties["PCSystemType"].Value;
+
+                        if (value != null && Convert.ToUInt16(value) == mobileSystem)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (ManagementException)
+            {
+                // Not worth failing an update check over; desktop is the safer assumption.
+            }
+
+            return false;
         }
 
         private string ExtractUpdate(string updatePath)

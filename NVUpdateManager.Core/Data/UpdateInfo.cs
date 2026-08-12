@@ -4,13 +4,19 @@ namespace NVUpdateManager.Core.Data
 {
     public class UpdateInfo
     {
-        public UpdateInfo(string versionNumber, string releaseDate, string details, string downloadLink)
+        public UpdateInfo(string versionNumber, string releaseDate, string details, string downloadLink, string name = null)
         {
             VersionNumber = versionNumber;
             ReleaseDate = releaseDate;
             Details = details;
             DownloadLink = downloadLink;
+            Name = name;
         }
+
+        /// <summary>
+        /// The driver's name, for example "GeForce Game Ready Driver" or "NVIDIA Studio Driver".
+        /// </summary>
+        public string Name { get; }
 
         public string VersionNumber { get; }
         public string ReleaseDate { get; }
@@ -20,6 +26,11 @@ namespace NVUpdateManager.Core.Data
         public override string ToString()
         {
             var returnValue = new StringBuilder();
+
+            if (!string.IsNullOrWhiteSpace(Name))
+            {
+                returnValue.Append($"<p>Driver: {Name}</p>");
+            }
 
             returnValue.Append($"<p>Version: {VersionNumber}</p>");
             returnValue.Append($"<p>Release Date: {ReleaseDate}</p>");

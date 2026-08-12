@@ -12,7 +12,7 @@ Windows application suite for managing NVIDIA Game Ready Driver updates without 
 ## Components
 
 ### NotificationService
-Windows background service that checks the currently installed Game Ready Driver version and checks the NVIDIA driver search page for a newer version. If it finds an available update, it uses an Azure Logic App to send an email to a user (configured in `appsettings.json`)
+Windows background service that checks the currently installed driver version and asks NVIDIA whether a newer one is available. If it finds an available update, it uses an Azure Logic App to send an email to a user (configured in `appsettings.json`)
 
 You can create your own Logic App using this [tutorial](https://learn.microsoft.com/en-us/azure/app-service/tutorial-send-email?tabs=dotnet).
 Use this as the sample payload:
@@ -30,7 +30,55 @@ Use this as the sample payload:
 - Installation instructions
   -   Download and unzip [NVUpdateManager.NotificationService.zip](https://github.com/terellison/NVUpdateManager/releases/latest/download/NVUpdateManager.NotificationService.zip)
   -   Run `NVUpdateManager.NotificationService.Installer.msi`
-  -   Configure the drivers you want to search for in `C:\Program Files\NVUpdateManager.NotificationService\appsettings.json`
+  -   Configure your email settings in `C:\Program Files\NVUpdateManager.NotificationService\appsettings.json`
   -   Start the service in the Windows Services manager
+
+There is no list of supported GPUs to maintain. The service identifies the installed GPU and
+looks it up against NVIDIA's catalogue, so any GPU NVIDIA publishes drivers for is supported,
+including ones released after your installed version.
+
+## How GPU detection works
+
+NVIDIA's driver search is driven by numeric identifiers — a product series (`psid`) and a
+product family (`pfid`) — that are not guessable and change with every product launch. Rather
+than transcribing them into the source, the application reads them from the same endpoint the
+website's own dropdowns call:
+
+| Request | Returns |
+| --- | --- |
+| `lookupValueSearch.aspx?TypeID=1` | Product types (GeForce, RTX / Quadro, Data Center, …) |
+| `lookupValueSearch.aspx?TypeID=2&ParentID=<type>` | Product series, with its `psid` |
+| `lookupValueSearch.aspx?TypeID=3&ParentID=<psid>` | Products in that series, with each `pfid` |
+| `lookupValueSearch.aspx?TypeID=4&ParentID=<psid>` | Operating systems offered, with each `osID` |
+
+Walking that tree yields every GPU NVIDIA ships drivers for (currently ~960 across ~106
+series). The result is cached under `%ProgramData%\NVUpdateManager\gpu-catalog.json` and
+refreshed weekly, so the walk costs a few seconds roughly once a week rather than on every
+check.
+
+The adapter name reported by WMI is then matched against that catalogue. The two sources
+disagree on spelling in ways the matcher normalises: Windows always prefixes names with
+`NVIDIA`, while NVIDIA's catalogue only does so for recent products. Where a desktop and a
+notebook GPU share a name — common before the Ampere generation, which introduced the
+`Laptop GPU` suffix — the machine's chassis type decides which one applies.
+
+Driver details come from NVIDIA's `AjaxDriverService` JSON endpoint, which returns the version,
+release date, release notes, and download URL in a single request.
+
+### Optional settings
+
+Everything in `DriverSearchConfiguration` is optional:
+
+```json
+"DriverSearchConfiguration": {
+  "Branch": "GameReady"
+}
+```
+
+| Setting | Purpose |
+| --- | --- |
+| `Branch` | `GameReady` (default) or `Studio` |
+| `ProductNameOverride` | The name NVIDIA lists your GPU under, if Windows reports a different one |
+| `ProductSeriesId` / `ProductFamilyId` | Pin `psid` / `pfid` directly, bypassing the catalogue |
 
 
