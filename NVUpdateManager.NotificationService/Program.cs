@@ -32,16 +32,7 @@ namespace NVUpdateManager.NotificationService
 
                     services.Configure<EmailConfiguration>(configuration.GetSection(nameof(EmailConfiguration)));
 
-                    var sectionName = $"{nameof(SupportedDriver)}s";
-
-                    var supportedDrivers = new List<SupportedDriver>();
-
-                    configuration.GetSection(sectionName).Bind(supportedDrivers);
-
-                    foreach (var supportedDriver in supportedDrivers)
-                    {
-                        services.AddSingleton(supportedDriver);
-                    }
+                    services.Configure<DriverSearchConfiguration>(configuration.GetSection(nameof(DriverSearchConfiguration)));
 
                     services.Configure<HostOptions>(hostOptions =>
                     {

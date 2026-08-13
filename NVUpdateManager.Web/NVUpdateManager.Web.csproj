@@ -4,10 +4,12 @@
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="1.7.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.10" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NVUpdateManager.Core\NVUpdateManager.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="NVUpdateManager.Web.Tests" />
   </ItemGroup>
 </Project>
