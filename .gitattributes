@@ -1,0 +1,38 @@
+# Normalise line endings so they stop turning up in diffs.
+#
+# Git stores every text file with LF and converts on checkout, so it no longer
+# matters whether an editor, a tool, or `dotnet sln add` writes CRLF or LF - the
+# committed form is the same either way. Without this a file could appear
+# rewritten in its entirety when only its line endings had changed.
+#
+# This cannot manage byte order marks: Git has no BOM handling at all. Visual
+# Studio writes a BOM on some files and not others, and those are left as they
+# are. A tool that strips one will still show up as a change to the first line.
+
+* text=auto
+
+# Windows tooling rewrites these with CRLF whenever it touches them, so keep
+# CRLF in the working copy and avoid a diff every time they are saved.
+*.sln       text eol=crlf
+*.csproj    text eol=crlf
+*.props     text eol=crlf
+*.targets   text eol=crlf
+*.cmd       text eol=crlf
+*.bat       text eol=crlf
+*.ps1       text eol=crlf
+
+# Shell scripts need LF to stay runnable on Unix.
+*.sh        text eol=lf
+
+# Declared up front so none of these are ever normalised as text if added later.
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.pdf       binary
+*.zip       binary
+*.exe       binary
+*.dll       binary
+*.msi       binary
+*.snk       binary
