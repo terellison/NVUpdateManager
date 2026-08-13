@@ -1,5 +1,4 @@
 using NVUpdateManager.Core.Interfaces;
-using static NVUpdateManager.EmailHandler.EmailHandler;
 using NVUpdateManager.Core;
 using Microsoft.Extensions.Options;
 using NVUpdateManager.NotificationService.Data;
@@ -11,26 +10,26 @@ namespace NVUpdateManager.NotificationService.Services
     public class NVNotificationService : INotificationService
     {
         private readonly ILogger<NVNotificationService> _logger;
-        private readonly IOptions<EmailConfiguration> _options;
         private readonly IOptions<DriverSearchConfiguration> _driverSearch;
         private readonly IDriverManager _driverManager;
         private readonly IUpdateFinder _updateFinder;
         private readonly IProductCatalog _productCatalog;
+        private readonly INotificationDispatcher _notifications;
 
         public NVNotificationService(
             ILogger<NVNotificationService> logger,
-            IOptions<EmailConfiguration> options,
             IOptions<DriverSearchConfiguration> driverSearch,
             IDriverManager driverManager,
             IUpdateFinder updateFinder,
-            IProductCatalog productCatalog)
+            IProductCatalog productCatalog,
+            INotificationDispatcher notifications)
         {
             _logger = logger;
-            _options = options;
             _driverSearch = driverSearch;
             _driverManager = driverManager;
             _updateFinder = updateFinder;
             _productCatalog = productCatalog;
+            _notifications = notifications;
         }
 
         public async Task Run()
@@ -43,18 +42,15 @@ namespace NVUpdateManager.NotificationService.Services
 
             if (newUpdateInfo != null)
             {
-                _logger.LogInformation(
-                    "Found new driver update" +
-                    $"\nDetails: \n{newUpdateInfo}\n" +
-                    $"Sending notification to {_options.Value.NotificationAddress}");
+                _logger.LogInformation("Found new driver update\nDetails: \n{Details}\n", newUpdateInfo);
 
-                try
+                var message = NotificationMessage.ForUpdate(newUpdateInfo, currentDriverInfo.DeviceName);
+
+                var delivered = await _notifications.SendAsync(message);
+
+                if (delivered.Count == 0)
                 {
-                    SendUpdateNotification(newUpdateInfo);
-                }
-                catch (Exception ex)
-                {
-                    throw new InvalidOperationException("Failed to send update email to maintenance", ex);
+                    _logger.LogWarning("Found an update but could not announce it through any channel");
                 }
             }
 
@@ -128,20 +124,6 @@ namespace NVUpdateManager.NotificationService.Services
             }
 
             return product;
-        }
-
-        private void SendUpdateNotification(UpdateInfo info)
-        {
-            if (!IsConfigured)
-            {
-                ConfigureLogicAppEndpoint(_options.Value.Entropy, _options.Value.EncryptedAzLogicAppEndpoint);
-                ConfigureAddresses(_options.Value.NotificationAddress);
-            }
-
-            var driverName = string.IsNullOrWhiteSpace(info.Name) ? "driver" : info.Name;
-
-            SendNotificationEmail($"New {driverName} update available",
-                info.ToString());
         }
 
     }

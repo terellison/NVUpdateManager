@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-NVUpdateManager.NotificationService-521cbd9e-f6aa-4d72-b3f2-95c00580e746</UserSecretsId>
@@ -18,6 +19,7 @@
     <ProjectReference Include="..\NVUpdateManager.Core\NVUpdateManager.Core.csproj" />
     <ProjectReference Include="..\NVUpdateManager.EmailHandler\NVUpdateManager.EmailHandler.csproj" />
     <ProjectReference Include="..\NVUpdateManager.Web\NVUpdateManager.Web.csproj" />
+    <ProjectReference Include="..\NVUpdateManager.Notifications\NVUpdateManager.Notifications.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="appsettings.json" CopyToPublishDirectory="Always" />

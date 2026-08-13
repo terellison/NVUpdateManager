@@ -12,9 +12,67 @@ Windows application suite for managing NVIDIA Game Ready Driver updates without 
 ## Components
 
 ### NotificationService
-Windows background service that checks the currently installed driver version and asks NVIDIA whether a newer one is available. If it finds an available update, it uses an Azure Logic App to send an email to a user (configured in `appsettings.json`)
+Checks the currently installed driver version and asks NVIDIA whether a newer one is available.
+If it finds one, it tells you. Runs as a scheduled task rather than a resident service, so it
+costs nothing between checks.
 
-You can create your own Logic App using this [tutorial](https://learn.microsoft.com/en-us/azure/app-service/tutorial-send-email?tabs=dotnet).
+- Installation instructions
+  -   Download and unzip [NVUpdateManager.NotificationService.zip](https://github.com/terellison/NVUpdateManager/releases/latest/download/NVUpdateManager.NotificationService.zip)
+  -   Run `NVUpdateManager.NotificationService.Installer.msi`
+  -   Schedule it to run as often as you would like updates checked
+
+There is nothing to configure. There is also no list of supported GPUs to maintain: the service
+identifies the installed GPU and looks it up against NVIDIA's catalogue, so any GPU NVIDIA
+publishes drivers for is supported, including ones released after your installed version.
+
+## Notifications
+
+With no configuration the service shows a Windows desktop notification. Azure is not required,
+and neither is anything else.
+
+Notification channels are selected in `appsettings.json`. Leave `Channels` empty and every
+channel that has what it needs is used, which on a fresh install means the desktop notification.
+
+| Channel | Setup | Use it when |
+| --- | --- | --- |
+| `Toast` | none | You are at the machine. The default. |
+| `Smtp` | mail host and account | You want email, or the machine is headless or remote. |
+| `LogicApp` | an Azure Logic App | You already run one. Kept for existing installations. |
+
+### Email without Azure
+
+Any mail account works. For Gmail or Outlook this needs an [app password](https://support.google.com/accounts/answer/185833),
+not the account password:
+
+```json
+"Notifications": {
+  "Channels": [ "Smtp" ],
+  "Smtp": {
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "UseStartTls": true,
+    "Username": "you@gmail.com",
+    "Password": "your-app-password",
+    "To": "you@gmail.com"
+  }
+}
+```
+
+`From` defaults to `Username` and `To` defaults to `From`, so notifying yourself needs neither.
+
+Channels are independent: listing more than one sends through all of them, and one failing is
+logged without stopping the others or failing the update check.
+
+A note on why this cannot be entirely automatic. Sending internet email requires either an
+account to send through or a third-party sending service — there is no credential-free path,
+because that is precisely what the anti-spam machinery of email exists to prevent. The desktop
+notification is what genuinely needs no setup; SMTP is the smallest possible amount of it.
+
+### Using the Azure Logic App
+
+Still supported, and existing `EmailConfiguration` settings are read as before, so upgrading
+does not stop the mail. You can create a Logic App using this
+[tutorial](https://learn.microsoft.com/en-us/azure/app-service/tutorial-send-email?tabs=dotnet).
 Use this as the sample payload:
 
 ```json
@@ -27,15 +85,20 @@ Use this as the sample payload:
 }
 ```
 
-- Installation instructions
-  -   Download and unzip [NVUpdateManager.NotificationService.zip](https://github.com/terellison/NVUpdateManager/releases/latest/download/NVUpdateManager.NotificationService.zip)
-  -   Run `NVUpdateManager.NotificationService.Installer.msi`
-  -   Configure your email settings in `C:\Program Files\NVUpdateManager.NotificationService\appsettings.json`
-  -   Start the service in the Windows Services manager
+Then point the service at it:
 
-There is no list of supported GPUs to maintain. The service identifies the installed GPU and
-looks it up against NVIDIA's catalogue, so any GPU NVIDIA publishes drivers for is supported,
-including ones released after your installed version.
+```json
+"Notifications": {
+  "Channels": [ "LogicApp" ],
+  "LogicApp": {
+    "EncryptedAzLogicAppEndpoint": "<encrypted endpoint>",
+    "Entropy": "<entropy>",
+    "NotificationAddress": "<email-address>"
+  }
+}
+```
+
+Encrypt the endpoint with `NVUpdateManager.NotificationService.exe /EncryptEndpoint "your-endpoint-here"`.
 
 ## How GPU detection works
 
