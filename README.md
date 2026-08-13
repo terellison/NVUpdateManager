@@ -50,7 +50,7 @@ not the account password:
   "Smtp": {
     "Host": "smtp.gmail.com",
     "Port": 587,
-    "UseStartTls": true,
+    "Security": "StartTls",
     "Username": "you@gmail.com",
     "Password": "your-app-password",
     "To": "you@gmail.com"
@@ -67,6 +67,39 @@ A note on why this cannot be entirely automatic. Sending internet email requires
 account to send through or a third-party sending service — there is no credential-free path,
 because that is precisely what the anti-spam machinery of email exists to prevent. The desktop
 notification is what genuinely needs no setup; SMTP is the smallest possible amount of it.
+
+### Testing notifications
+
+A real notification only happens when NVIDIA publishes something newer than the driver you have,
+which is not a convenient thing to wait for. To check delivery works at any time:
+
+```
+NVUpdateManager.NotificationService.exe /TestNotification
+```
+
+That sends a sample notification through whichever channels are configured and prints which ones
+delivered it. It goes through the same dispatcher a real update uses, so channel selection is
+exercised too — if this works, a real update will.
+
+To test the mail without sending real mail, point it at a local mail catcher such as
+[smtp4dev](https://github.com/rnwood/smtp4dev) or [Papercut](https://github.com/ChangemakerStudios/Papercut-SMTP)
+and set `Security` to `None`:
+
+```json
+"Notifications": {
+  "Channels": [ "Smtp" ],
+  "Smtp": {
+    "Host": "127.0.0.1",
+    "Port": 2525,
+    "Security": "None",
+    "From": "nvupdatemanager@example.com",
+    "To": "you@example.com"
+  }
+}
+```
+
+`Security` is `StartTls` (port 587) by default, `SslOnConnect` for implicit TLS on port 465, and
+`None` for a local relay or a catcher. Leave it alone for a real provider.
 
 ### Using the Azure Logic App
 

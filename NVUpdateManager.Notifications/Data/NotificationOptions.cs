@@ -3,6 +3,21 @@ using System.Collections.Generic;
 namespace NVUpdateManager.Notifications.Data
 {
     /// <summary>
+    /// How an SMTP connection is secured.
+    /// </summary>
+    public enum SmtpSecurity
+    {
+        /// <summary>Upgrade to TLS after connecting. Port 587, and what most providers want.</summary>
+        StartTls,
+
+        /// <summary>TLS from the first byte. Port 465.</summary>
+        SslOnConnect,
+
+        /// <summary>No encryption. For a relay on localhost, or a mail catcher while testing.</summary>
+        None
+    }
+
+    /// <summary>
     /// How update notifications are delivered. Everything here is optional: with no configuration
     /// at all the application falls back to whichever channels need no setup, which on Windows
     /// means a desktop notification.
@@ -31,10 +46,11 @@ namespace NVUpdateManager.Notifications.Data
         public int Port { get; set; } = 587;
 
         /// <summary>
-        /// STARTTLS on port 587, which is what nearly every provider expects. Set false only for
-        /// implicit TLS on port 465.
+        /// How the connection is secured. STARTTLS on port 587 is what nearly every provider
+        /// expects; implicit TLS is port 465; None exists for a local relay or a mail catcher
+        /// used while testing.
         /// </summary>
-        public bool UseStartTls { get; set; } = true;
+        public SmtpSecurity Security { get; set; } = SmtpSecurity.StartTls;
 
         public string? Username { get; set; }
 

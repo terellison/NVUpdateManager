@@ -33,9 +33,12 @@ namespace NVUpdateManager.Notifications.Channels
 
             using (var client = new SmtpClient())
             {
-                var security = options.UseStartTls
-                    ? SecureSocketOptions.StartTls
-                    : SecureSocketOptions.SslOnConnect;
+                var security = options.Security switch
+                {
+                    SmtpSecurity.SslOnConnect => SecureSocketOptions.SslOnConnect,
+                    SmtpSecurity.None => SecureSocketOptions.None,
+                    _ => SecureSocketOptions.StartTls
+                };
 
                 await client.ConnectAsync(options.Host, options.Port, security, cancellationToken)
                     .ConfigureAwait(false);
