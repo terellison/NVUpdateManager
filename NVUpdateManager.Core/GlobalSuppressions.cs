@@ -5,4 +5,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "This program only ships on Windows", Scope = "module")]
+/* Scoped to the one type that talks to WMI rather than the whole module, so that platform
+ * compatibility is still checked everywhere else.
+ */
+
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "This program only ships on Windows", Scope = "type", Target = "~T:NVUpdateManager.Core.WmiSystemHardwareInfo")]

@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NVUpdateManager.Core.Data;
@@ -11,10 +11,26 @@ namespace NVUpdateManager.Core
 {
     internal sealed class DriverManager : IDriverManager
     {
+        // 2 is "Mobile" in the Win32_ComputerSystem.PCSystemType enumeration.
+        private const ushort MobileSystem = 2;
+
+        private static readonly string[] NvidiaAdapterNames =
+        {
+            nameof(DriverType.GeForce),
+            nameof(DriverType.RTX),
+            nameof(DriverType.GTX)
+        };
+
+        private const string DriverNotFound =
+            "Could not find NVIDIA Game Ready Driver. Ensure that the driver is installed correctly";
+
         private readonly HttpClient _httpClient;
-        public DriverManager(HttpClient httpClient)
+        private readonly ISystemHardwareInfo _systemHardwareInfo;
+
+        public DriverManager(HttpClient httpClient, ISystemHardwareInfo systemHardwareInfo)
         {
             _httpClient = httpClient;
+            _systemHardwareInfo = systemHardwareInfo;
         }
 
         public Task<UpdateResult> InstallUpdate(string downloadLink)
@@ -31,37 +47,38 @@ namespace NVUpdateManager.Core
         {
             return Task.Run(() =>
             {
-                const string wmiQuery = "SELECT * FROM Win32_PnPSignedDriver";
+                IReadOnlyList<PnpDriverRecord> drivers;
 
-                ManagementBaseObject nvDriver;
-
-                using (var drivers = new ManagementObjectSearcher(wmiQuery).Get())
+                try
                 {
-                    try
-                    {
-                        nvDriver = (from ManagementBaseObject x in drivers
-                                    let deviceName = x.Properties["DeviceName"].Value?.ToString()
-                                    where
-                                        !string.IsNullOrWhiteSpace(deviceName)
-                                        && (deviceName.Contains(nameof(DriverType.GeForce))
-                                        || deviceName.Contains(nameof(DriverType.RTX))
-                                        || deviceName.Contains(nameof(DriverType.GTX)))
-                                    select x)
-                                                    .FirstOrDefault();
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new InvalidOperationException("Could not find NVIDIA Game Ready Driver. Ensure that the driver is installed correctly", ex);
-                    }
-
-                    if (nvDriver == null)
-                    {
-                        throw new InvalidOperationException("Could not find NVIDIA Game Ready Driver. Ensure that the driver is installed correctly");
-                    }
-
-                    return new DriverInfo(nvDriver, IsMobileSystem());
+                    drivers = _systemHardwareInfo.GetSignedDrivers();
                 }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(DriverNotFound, ex);
+                }
+
+                var nvDriver = drivers.FirstOrDefault(IsNvidiaAdapter);
+
+                if (nvDriver == null)
+                {
+                    throw new InvalidOperationException(DriverNotFound);
+                }
+
+                return DriverInfo.FromWmi(nvDriver.DeviceName, nvDriver.DriverVersion, IsMobileSystem());
             });
+        }
+
+        /// <summary>
+        /// Recognises an NVIDIA display adapter among every signed driver on the machine, which
+        /// on a laptop includes the integrated graphics sitting alongside it.
+        /// </summary>
+        private static bool IsNvidiaAdapter(PnpDriverRecord driver)
+        {
+            var deviceName = driver?.DeviceName;
+
+            return !string.IsNullOrWhiteSpace(deviceName)
+                && NvidiaAdapterNames.Any(name => deviceName.Contains(name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -69,34 +86,17 @@ namespace NVUpdateManager.Core
         /// separate products, and before the Ampere generation both variants carried the same
         /// name, so the chassis is what tells them apart.
         /// </summary>
-        private static bool IsMobileSystem()
+        private bool IsMobileSystem()
         {
-            const string wmiQuery = "SELECT PCSystemType FROM Win32_ComputerSystem";
-
-            // 2 is "Mobile" in the Win32_ComputerSystem.PCSystemType enumeration.
-            const ushort mobileSystem = 2;
-
             try
             {
-                using (var systems = new ManagementObjectSearcher(wmiQuery).Get())
-                {
-                    foreach (ManagementBaseObject system in systems)
-                    {
-                        var value = system.Properties["PCSystemType"].Value;
-
-                        if (value != null && Convert.ToUInt16(value) == mobileSystem)
-                        {
-                            return true;
-                        }
-                    }
-                }
+                return _systemHardwareInfo.GetPcSystemType() == MobileSystem;
             }
-            catch (ManagementException)
+            catch (Exception)
             {
                 // Not worth failing an update check over; desktop is the safer assumption.
+                return false;
             }
-
-            return false;
         }
 
         private string ExtractUpdate(string updatePath)

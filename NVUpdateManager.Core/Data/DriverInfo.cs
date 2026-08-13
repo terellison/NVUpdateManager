@@ -1,12 +1,22 @@
 using System;
 using System.Globalization;
-using System.Management;
 
 namespace NVUpdateManager.Core
 {
     public class DriverInfo
     {
+        public DriverInfo(string deviceName, string driverVersion, bool isMobileSystem = false)
+        {
+            DeviceName = deviceName;
+            DriverVersion = driverVersion;
+            IsMobileSystem = isMobileSystem;
+        }
+
         public string DeviceName { get; }
+
+        /// <summary>
+        /// The installed version in the form NVIDIA publishes, for example "527.27".
+        /// </summary>
         public string DriverVersion { get; }
 
         /// <summary>
@@ -16,24 +26,16 @@ namespace NVUpdateManager.Core
         /// </summary>
         public bool IsMobileSystem { get; }
 
-        public DriverInfo(ManagementBaseObject driver, bool isMobileSystem = false)
-        {
-            DeviceName = driver.Properties[nameof(DeviceName)].Value.ToString();
-            DriverVersion = ParseVersion(driver.Properties[nameof(DriverVersion)].Value.ToString());
-            IsMobileSystem = isMobileSystem;
-        }
-
         /// <summary>
-        /// Creates driver information from already-parsed values.
+        /// Creates driver information from the values Windows reports, translating the driver
+        /// version into the form NVIDIA publishes.
         /// </summary>
-        public DriverInfo(string deviceName, string driverVersion, bool isMobileSystem = false)
+        public static DriverInfo FromWmi(string deviceName, string wmiDriverVersion, bool isMobileSystem = false)
         {
-            DeviceName = deviceName;
-            DriverVersion = driverVersion;
-            IsMobileSystem = isMobileSystem;
+            return new DriverInfo(deviceName, ParseVersion(wmiDriverVersion), isMobileSystem);
         }
 
-        private string ParseVersion(string value)
+        private static string ParseVersion(string value)
         {
 
             /* Version number from WMI looks like this: 31.0.15.2727
@@ -41,12 +43,12 @@ namespace NVUpdateManager.Core
              * We need the second one...
              */
 
-            var valueArr = value.Split('.');
-
             decimal versionAsANumber;
 
             try
             {
+                var valueArr = value.Split('.');
+
                 versionAsANumber = decimal.Parse(
                     valueArr[2].Substring(valueArr[2].Length - 1, 1) + valueArr[3],
                     CultureInfo.InvariantCulture) / 100;
